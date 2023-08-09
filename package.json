@@ -1,0 +1,42 @@
+{
+  "name": "aws-iam-managed-policies",
+  "version": "0.0.1",
+  "description": "Provides AWS IAM Managed Policies historical data as a convenient npm package that can be used in other OSS projects.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "gather-managed-policies": "ts-node --transpile-only --log-error process/gatherManagedPolicies.ts",
+    "backfill-managed-policies": "ts-node --transpile-only --log-error process/backfillManagedPoliciesHistory.ts",
+    "build": "rm -rf dist/ && tsc --build src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobilg/aws-iam-managed-policies.git"
+  },
+  "keywords": [
+    "aws",
+    "iam",
+    "data",
+    "cloud",
+    "managed",
+    "policies",
+    "policy"
+  ],
+  "author": "TobiLG <tobilg@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tobilg/aws-iam-managed-policies/issues"
+  },
+  "homepage": "https://github.com/tobilg/aws-iam-managed-policies#readme",
+  "devDependencies": {
+    "@types/node": "^20.4.9",
+    "aws-sdk": "^2.1432.0",
+    "mkdirp": "^3.0.1",
+    "p-limit": "3.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
