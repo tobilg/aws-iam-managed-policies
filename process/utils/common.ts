@@ -110,6 +110,8 @@ export const getPolicyDetails = (policy: IAM.Policy): Promise<ManagedPolicyMetad
       updatedDate: policy?.UpdateDate,
     }
 
+    console.log(`Got info for Policy '${policy.PolicyName!}' at version '${policy.DefaultVersionId!}'`);
+
     resolve(policyDetail);
   })
 }
