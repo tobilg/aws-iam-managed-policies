@@ -6,7 +6,7 @@ import pLimit from 'p-limit';
 
 import { ManagedPolicies } from '../../src/types';
 
-// Limit to 25 parallel API requests to avoid throttling
+// Limit to 10 parallel API requests to avoid throttling
 const limit = pLimit(10);
 
 export interface GetPolicyProps {
@@ -54,7 +54,7 @@ export const writeFileAsJSON = (data: object, filePath: string, fileName: string
 export const getPolicies = (props: GetPolicyProps): Promise<IAM.Policy[]> => {
   let params = {
     Scope: 'AWS',
-    MaxItems: 1000,
+    MaxItems: 25, // Try to avoid throttling in the CI
     Marker: props?.marker,
   }
 
