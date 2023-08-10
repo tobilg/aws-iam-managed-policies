@@ -3,11 +3,7 @@ import { mkdirp } from 'mkdirp';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import pLimit from 'p-limit';
-
 import { ManagedPolicies } from '../../src/types';
-
-// Limit to 10 parallel API requests to avoid throttling
-const limit = pLimit(10);
 
 export interface GetPolicyProps {
   marker?: string,
@@ -36,6 +32,28 @@ export interface ManagedPolicyIndex {
 
 // Instantiate IAM service
 const iam = new IAM();
+
+// Check if running in CI
+const { CI } = process.env;
+
+// Store parallelism
+let parallelism = 10;
+
+// Reduce parallelism when running in CI
+if (CI) {
+  parallelism = 3;
+}
+
+// Limit to 10 parallel API requests to avoid throttling
+const limit = pLimit(parallelism);
+
+const wait = (timeInMs: number): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, timeInMs);
+  })
+}
   
 export const writePolicyFile = (data: object, policyName: string, policyVersion: string) => {
   // Create base path
@@ -54,7 +72,7 @@ export const writeFileAsJSON = (data: object, filePath: string, fileName: string
 export const getPolicies = (props: GetPolicyProps): Promise<IAM.Policy[]> => {
   let params = {
     Scope: 'AWS',
-    MaxItems: 25, // Try to avoid throttling in the CI
+    MaxItems: 1000, // Try to avoid throttling in the CI
     Marker: props?.marker,
   }
 
@@ -77,6 +95,11 @@ export const getPolicyDetails = (policy: IAM.Policy): Promise<ManagedPolicyMetad
       PolicyArn: policy.Arn!,
       VersionId: policy.DefaultVersionId!,
     }).promise();
+
+    // Try to avoid throttling
+    if (CI) {
+      await wait(250);
+    }
     
     const policyDetail: ManagedPolicyMetadata = {
       arn: policy.Arn!,
@@ -131,4 +154,59 @@ export const backfillVersions = (policy: IAM.Policy, managedPolicies: ManagedPol
   }
 
   return promises;
+}
+
+export const updatePolicies = async (currentManagedPolicies: ManagedPolicies, policies: IAM.Policy[]): Promise<boolean> => {
+  // Detect changes
+  let hasChanges = false;
+
+  // Get all current policy versions
+  const policyPromises = policies.map(policy => (
+    limit(() => getPolicyDetails(policy))
+  ));
+
+  // Run API calls
+  const result: ManagedPolicyMetadata[] = await Promise.all(policyPromises);
+
+  // Iterate over policies
+  result.forEach((policy) => {
+    // Lookup policy
+    if (currentManagedPolicies[policy.name]) {
+      if (currentManagedPolicies[policy.name].versions[policy.versionId]) {
+        console.log(`Policy '${policy.name}' exists with version '${policy.versionId}'!`);
+      } else {
+        // Write current policy file
+        writePolicyFile(policy.document, policy.name, policy.versionId);
+        console.log(`Created new version '${policy.versionId}' for policy '${policy.name}'!`);
+
+        hasChanges = true;
+      }
+    } else {
+      console.log(`Policy '${policy.name}' doesn't exist, creating!`);
+
+      // Create policy
+      currentManagedPolicies[policy.name] = {
+        arn: policy.arn,
+        latestVersionId: policy.versionId,
+        versionsCount: parseInt(policy.versionId.replace('v', '')),
+        versions: {},
+        createdDate: policy.createdDate,
+        lastUpdatedDate: policy.updatedDate,
+      }
+
+      // Create policy version
+      currentManagedPolicies[policy.name].versions[policy.versionId] = {
+        createdDate: policy.createdDate,
+        document: policy.document,
+      }
+
+      // Write current policy file
+      writePolicyFile(policy.document, policy.name, policy.versionId);
+      console.log(`Created new version '${policy.versionId}' for policy '${policy.name}'!`);
+
+      hasChanges = true;
+    }
+  });
+
+  return hasChanges;
 }
