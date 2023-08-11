@@ -177,8 +177,18 @@ export const updatePolicies = async (currentManagedPolicies: ManagedPolicies, po
       if (currentManagedPolicies[policy.name].versions[policy.versionId]) {
         console.log(`Policy '${policy.name}' exists with version '${policy.versionId}'!`);
       } else {
+        // Create policy version
+        currentManagedPolicies[policy.name].versions[policy.versionId] = {
+          createdDate: policy.createdDate,
+          document: policy.document,
+        }
         // Write current policy file
         writePolicyFile(policy.document, policy.name, policy.versionId);
+        // Update policy data
+        currentManagedPolicies[policy.name].lastUpdatedDate = policy.updatedDate;
+        currentManagedPolicies[policy.name].latestVersionId = policy.versionId;
+        currentManagedPolicies[policy.name].versionsCount = parseInt(policy.versionId.replace('v', ''));
+
         console.log(`Created new version '${policy.versionId}' for policy '${policy.name}'!`);
 
         hasChanges = true;
