@@ -1,0 +1,191 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      index.js - Documentation
+  </title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  
+  <link type="text/css" rel="stylesheet" href="styles/collapse.css">
+  
+
+  
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      AWS IAM Managed Policies
+    </h3>
+
+    
+      <h3>
+        Resources
+      </h3>
+      
+        <a href="https://docs.aws.amazon.com/aws-managed-policy/latest/reference/policy-list.html">AWS managed policies</a>
+      
+    
+
+    <h3 id="global-nav">Global</h3><ul><li><a href="global.html#getLatestPolicyDocument">getLatestPolicyDocument</a></li><li><a href="global.html#getPolicyByName">getPolicyByName</a></li><li><a href="global.html#getPolicyCount">getPolicyCount</a></li><li><a href="global.html#getPolicyDocumentByVersion">getPolicyDocumentByVersion</a></li><li><a href="global.html#listPolicies">listPolicies</a></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        index.js
+      </h1>
+    
+
+    
+      
+
+<section>
+  <article>
+    <pre class="prettyprint source linenums"><code>"use strict";
+var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
+    return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getPolicyDocumentByVersion = exports.getLatestPolicyDocument = exports.getPolicyByName = exports.getPolicyCount = exports.listPolicies = void 0;
+var managedPolicies_json_1 = __importDefault(require("./managedPolicies.json"));
+var sortObjectByPropertyNames = function (obj) { return Object.keys(obj).sort().reduce(function (objEntries, key) {
+    objEntries[key] = obj[key];
+    return objEntries;
+}, {}); };
+/**
+ * Retrieve a list of all included IAM Managed Polcies.
+ * @returns {Array} An array of IAM Managed Policy names.
+ */
+var listPolicies = function () {
+    return Object.keys(sortObjectByPropertyNames(managedPolicies_json_1.default));
+};
+exports.listPolicies = listPolicies;
+/**
+ * Get the number of included IAM Managed Polcies.
+ * @returns {number} The count of IAM Managed Policies.
+ */
+var getPolicyCount = function () {
+    return Object.keys(managedPolicies_json_1.default).length;
+};
+exports.getPolicyCount = getPolicyCount;
+/**
+ * Get the IAM Managed Policy by name
+ * @param {string} policyName The IAM Managed Policy name.
+ * @returns {object} The IAM Managed Policy if found.
+ * @throws Will throw an error if not found by the name.
+ */
+var getPolicyByName = function (policyName) {
+    var policy = managedPolicies_json_1.default[policyName];
+    if (policy) {
+        return policy;
+    }
+    else {
+        throw new Error("IAM Managed Policy '".concat(policyName, "' wasn't found!"));
+    }
+};
+exports.getPolicyByName = getPolicyByName;
+/**
+ * Get the latest policy document for a IAM Managed Policy by name
+ * @param {string} policyName The IAM Managed Policy name.
+ * @returns {object} The IAM Managed Policy document if found.
+ * @throws Will throw an error if not found by the name.
+ */
+var getLatestPolicyDocument = function (policyName) {
+    var policy = managedPolicies_json_1.default[policyName];
+    if (policy) {
+        var latestVersionId = policy.latestVersionId;
+        return policy.versions[latestVersionId].document;
+    }
+    else {
+        throw new Error("IAM Managed Policy '".concat(policyName, "' wasn't found!"));
+    }
+};
+exports.getLatestPolicyDocument = getLatestPolicyDocument;
+/**
+ * Get the latest policy document for a IAM Managed Policy by name
+ * @param {string} policyName The IAM Managed Policy name.
+ * @param {number} policyVersion The version id of the IAM Managed Policy.
+ * @returns {object} The IAM Managed Policy document if found.
+ * @throws Will throw an error if not found by the name.
+ */
+var getPolicyDocumentByVersion = function (policyName, policyVersion) {
+    var policy = managedPolicies_json_1.default[policyName];
+    if (policy &amp;&amp; policy.versions[policyVersion]) {
+        return policy.versions[policyVersion].document;
+    }
+    else {
+        throw new Error("IAM Managed Policy '".concat(policyName, "' wasn't found in version '").concat(policyVersion, "'!"));
+    }
+};
+exports.getPolicyDocumentByVersion = getPolicyDocumentByVersion;
+</code></pre>
+  </article>
+</section>
+
+    
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+
+</body>
+</html>
