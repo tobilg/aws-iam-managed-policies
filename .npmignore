@@ -6,3 +6,4 @@ data/json/
 src/
 tsconfig.json
 tsconfig.tsbuildinfo
+data/src/managedPolicies.json
