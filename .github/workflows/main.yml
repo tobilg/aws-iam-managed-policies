@@ -49,7 +49,7 @@ jobs:
           git diff-index --cached --quiet HEAD || echo '::set-output name=changed::true'
 
       - name: Eventually publish new package version
-        if: ${{ steps.gatherData.outputs.changed == 'true' }}
+        # if: ${{ steps.gatherData.outputs.changed == 'true' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
@@ -69,7 +69,7 @@ jobs:
           npm publish
 
       - name: Deploy docs to GitHub Pages
-        if: ${{ steps.gatherData.outputs.changed == 'true' }}
+        # if: ${{ steps.gatherData.outputs.changed == 'true' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
