@@ -4,7 +4,9 @@ process/
 docs/
 data/json/
 src/
+docs/
 tsconfig.json
 tsconfig.tsbuildinfo
 data/src/managedPolicies.json
 examples/index.js 
+.jsdoc.json
