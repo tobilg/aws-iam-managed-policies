@@ -8,28 +8,6 @@ on:
     - cron:  '0 4 * * *'
 
 jobs:
-  deploy:
-    needs: gather_and_update_iam_managed_policy_data
-
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build docs
-        id: docs
-        run: npm run generate-docs
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
 
   gather_and_update_iam_managed_policy_data:
     name: Gather the latest AWS IAM Managed Policy data and if there is new data, publish a new package version to npm
