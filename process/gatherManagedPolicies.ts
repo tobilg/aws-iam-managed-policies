@@ -12,7 +12,7 @@ const run = async () => {
 
   if (hasChanges) {
     // Write index
-    writeFileAsJSON(currentManagedPolicies, join(__dirname, '../data/src'), 'managedPolicies.json');
+    writeFileAsJSON(currentManagedPolicies, join(__dirname, '../src'), 'managedPolicies.json');
   } else {
     console.log(`No changes detected!`);
   }

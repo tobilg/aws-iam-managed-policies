@@ -57,7 +57,7 @@ const wait = (timeInMs: number): Promise<void> => {
   
 export const writePolicyFile = (data: object, policyName: string, policyVersion: string) => {
   // Create base path
-  const policyPath = join(__dirname, '../data/json', policyName, policyVersion);
+  const policyPath = join(__dirname, '../../data/json', policyName, policyVersion);
   // Write policy file
   writeFileAsJSON(data, policyPath, 'policy.json');
 }
