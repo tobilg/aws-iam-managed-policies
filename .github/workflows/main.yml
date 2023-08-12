@@ -70,6 +70,7 @@ jobs:
           npm publish
 
   publish_github_pages:
+    name: Publish GitHub Pages
     needs:
       - gather_and_update_iam_managed_policy_data
     environment:
@@ -84,7 +85,11 @@ jobs:
         uses: actions/configure-pages@v1
 
       - name: Generate docs for GitHub Pages
-        run: npm run generate-docs
+        run: |
+          # Build package sources \
+          npm run build && \
+          # Generate docs \
+          npm run generate-docs
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
