@@ -131,3 +131,5 @@ dist
 
 .DS_Store
 docs/
+tsconfig.tsbuildinfo
+node_modules/

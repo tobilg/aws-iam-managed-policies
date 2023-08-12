@@ -10,3 +10,4 @@ tsconfig.tsbuildinfo
 data/src/managedPolicies.json
 examples/index.js 
 .jsdoc.json
+tsconfig.tsbuildinfo
