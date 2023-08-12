@@ -7,16 +7,13 @@ on:
     # Run everyday at 4AM UTC
     - cron:  '0 4 * * *'
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
 
   gather_and_update_iam_managed_policy_data:
     name: Gather the latest AWS IAM Managed Policy data and if there is new data, publish a new package version to npm
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -77,6 +74,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
