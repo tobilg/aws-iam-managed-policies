@@ -49,21 +49,26 @@ jobs:
           git diff-index --cached --quiet HEAD || echo '::set-output name=changed::true'
 
       - name: Eventually publish new package version
-        # if: ${{ steps.gatherData.outputs.changed == 'true' }}
+        if: ${{ steps.gatherData.outputs.changed == 'true' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          # Increase package patch version \
-          npm --no-git-tag-version version patch && \
-          # Add new files \
-          git add . && \
-          # Commit changes \
-          git commit -am "[no ci] Data update on $(date '+%FT%H:%M:%S')" && \
-          # Push to repo \
-          git push && \
-          # Build package sources \
-          npm run build && \
-          # Publish new version to npm registry \
+          # Increase package patch version
+          npm --no-git-tag-version version patch
+
+          # Add new files
+          git add .
+
+          # Commit changes
+          git commit -am "[no ci] Data update on $(date '+%FT%H:%M:%S')"
+
+          # Push to repo
+          git push
+
+          # Build package sources
+          npm run build
+
+          # Publish new version to npm registry
           npm publish
 
   publish_github_pages:
@@ -88,9 +93,13 @@ jobs:
 
       - name: Generate docs for GitHub Pages
         run: |
-          # Build package sources \
-          npm run build && \
-          # Generate docs \
+          # Install dependencies
+          npm i
+
+          # Build package sources
+          npm run build
+
+          # Generate docs
           npm run generate-docs
 
       - name: Upload artifact
