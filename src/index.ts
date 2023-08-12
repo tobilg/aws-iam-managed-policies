@@ -1,3 +1,4 @@
+import { detailedDiff } from 'deep-object-diff';
 import managedPolicies from "./managedPolicies.json";
 import { ManagedPolicies, ManagedPolicy } from '../src/types';
 
@@ -23,7 +24,7 @@ export const getPolicyCount = (): number => {
 }
 
 /**
- * Get the IAM Managed Policy by name
+ * Get the IAM Managed Policy by name with the full version history
  * @param {string} policyName The IAM Managed Policy name.
  * @returns {object} The IAM Managed Policy if found.
  * @throws Will throw an error if not found by the name.
@@ -65,10 +66,34 @@ export const getLatestPolicyDocument = (policyName: string): object => {
 export const getPolicyDocumentByVersion = (policyName: string, policyVersion: number): object => {
   const policy = managedPolicies[policyName];
 
-  if (policy && policy.versions[policyVersion]) {
-    return policy.versions[policyVersion].document;
+  if (policy && policy.versions[`v${policyVersion}`]) {
+    return policy.versions[`v${policyVersion}`].document;
   } else {
     throw new Error(`IAM Managed Policy '${policyName}' wasn't found in version '${policyVersion}'!`);
+  }
+}
+
+/**
+ * Get a diff of the policy documents for two versions of a IAM Managed Policy
+ * @param {string} policyName The IAM Managed Policy name.
+ * @param {number} oldPolicyVersion The old version id of the IAM Managed Policy.
+ * @param {number} newPolicyVersion The new version id of the IAM Managed Policy.
+ * @returns {object} The diff of the IAM Managed Policy document versions if found.
+ * @throws Will throw an error if not found by the name or the respective policy document versions.
+ */
+export const getPolicyDiffByVersions = (policyName: string, oldPolicyVersion: number, newPolicyVersion: number): object => {
+  const policy = managedPolicies[policyName];
+
+  if (policy) {
+    if (!policy.versions[`v${oldPolicyVersion}`]) {
+      throw new Error(`IAM Managed Policy '${policyName}' wasn't found in version '${oldPolicyVersion}'!`);
+    }
+    if (!policy.versions[`v${newPolicyVersion}`]) {
+      throw new Error(`IAM Managed Policy '${policyName}' wasn't found in version '${newPolicyVersion}'!`);
+    }
+    return detailedDiff(policy.versions[`v${oldPolicyVersion}`].document, policy.versions[`v${newPolicyVersion}`].document);
+  } else {
+    throw new Error(`IAM Managed Policy '${policyName}' wasn't found!`);
   }
 }
 
