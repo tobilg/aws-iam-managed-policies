@@ -1,0 +1,519 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DataAccess",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:*",
+        "glue:*",
+        "logs:*",
+        "redshift-data:*",
+        "redshift-serverless:*",
+        "redshift:*",
+        "s3:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ComputeAccess",
+      "Effect": "Allow",
+      "Action": [
+        "athena:*",
+        "bedrock:*",
+        "codewhisperer:*",
+        "datazone:*",
+        "q:*",
+        "sagemaker:*",
+        "sagemaker-mlflow:*",
+        "scheduler:*",
+        "sqlworkbench:*",
+        "emr-serverless:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CfnManage",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:*"
+      ],
+      "Resource": [
+        "arn:aws:cloudformation:*:*:stack/DataZone*"
+      ]
+    },
+    {
+      "Sid": "ValidateCfn",
+      "Effect": "Allow",
+      "Action": "cloudformation:ValidateTemplate",
+      "Resource": "*"
+    },
+    {
+      "Sid": "IamSts",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetRole",
+        "iam:ListRoles",
+        "sts:AssumeRole"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CreateSLR",
+      "Effect": "Allow",
+      "Action": "iam:CreateServiceLinkedRole",
+      "Resource": [
+        "arn:aws:iam::*:role/aws-service-role/neptune-graph.amazonaws.com/AWSServiceRoleForNeptuneGraph",
+        "arn:aws:iam::*:role/aws-service-role/redshift.amazonaws.com/AWSServiceRoleForRedshift",
+        "arn:aws:iam::*:role/aws-service-role/sagemaker.amazonaws.com/AWSServiceRoleForAmazonSageMakerNotebooks",
+        "arn:aws:iam::*:role/aws-service-role/ops.emr-serverless.amazonaws.com/AWSServiceRoleForAmazonEMRServerless",
+        "arn:aws:iam::*:role/aws-service-role/airflow.amazonaws.com/AWSServiceRoleForAmazonMWAA",
+        "arn:aws:iam::*:role/aws-service-role/elasticmapreduce.amazonaws.com/AWSServiceRoleForEMRCleanup",
+        "arn:aws:iam::*:role/aws-service-role/sagemaker.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_SageMakerEndpoint",
+        "arn:aws:iam::*:role/aws-service-role/observability.aoss.amazonaws.com/AWSServiceRoleForAmazonOpenSearchServerless"
+      ]
+    },
+    {
+      "Sid": "TagRoleAndSession",
+      "Effect": "Allow",
+      "Action": [
+        "iam:TagRole",
+        "sts:TagSession"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ForAllValues:StringLike": {
+          "aws:TagKeys": [
+            "AmazonDataZone*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "PassRoleForProvisioning",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "sagemaker.amazonaws.com",
+            "lakeformation.amazonaws.com",
+            "glue.amazonaws.com"
+          ],
+          "aws:ResourceAccount": "${aws:PrincipalAccount}"
+        }
+      }
+    },
+    {
+      "Sid": "PassRole",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": [
+        "arn:aws:iam::*:role/service-role/AmazonSageMaker*",
+        "arn:aws:iam::*:role/${aws:PrincipalTag/AmazonDataZonePassedRolePath}"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "bedrock.amazonaws.com",
+            "datazone.amazonaws.com",
+            "redshift-serverless.amazonaws.com",
+            "redshift.amazonaws.com",
+            "scheduler.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "CreateRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:role/service-role/AmazonSageMaker*"
+      ]
+    },
+    {
+      "Sid": "AttachPolicy",
+      "Effect": "Allow",
+      "Action": "iam:AttachRolePolicy",
+      "Resource": "arn:aws:iam::*:role/service-role/AmazonSageMaker*",
+      "Condition": {
+        "ArnEquals": {
+          "iam:PolicyARN": [
+            "arn:aws:iam::aws:policy/SageMakerStudioUserIAMDefaultExecutionPolicy",
+            "arn:aws:iam::aws:policy/SageMakerStudioUserIAMPermissiveExecutionPolicy",
+            "arn:aws:iam::aws:policy/service-role/AmazonS3TablesLakeFormationServiceRole"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "SourceIdentity",
+      "Effect": "Allow",
+      "Action": "sts:SetSourceIdentity",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "sts:SourceIdentity": "${aws:PrincipalTag/datazone:userId}"
+        }
+      }
+    },
+    {
+      "Sid": "SSM",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DeleteParameter",
+        "ssm:GetParameter*",
+        "ssm:PutParameter"
+      ],
+      "Resource": [
+        "arn:aws:ssm:*:*:parameter/amazon/datazone/q*",
+        "arn:aws:ssm:*:*:parameter/amazon/datazone/genAI/*",
+        "arn:aws:ssm:*::parameter/aws/service/sagemaker-distribution/*"
+      ]
+    },
+    {
+      "Sid": "LFAccess",
+      "Effect": "Allow",
+      "Action": [
+        "lakeformation:BatchGrantPermissions",
+        "lakeformation:BatchRevokePermissions",
+        "lakeformation:DeregisterResource",
+        "lakeformation:DescribeResource",
+        "lakeformation:GetDataAccess",
+        "lakeformation:GetDataLakeSettings",
+        "lakeformation:GrantPermissions",
+        "lakeformation:ListPermissions",
+        "lakeformation:ListResources",
+        "lakeformation:PutDataLakeSettings",
+        "lakeformation:RegisterResource",
+        "lakeformation:RevokePermissions",
+        "lakeformation:ListLakeFormationOptIns",
+        "lakeformation:CreateLakeFormationOptIn",
+        "lakeformation:DeleteLakeFormationOptIn"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "FederatedConn",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:List*",
+        "dynamodb:Describe*",
+        "dynamodb:Scan",
+        "dynamodb:PartiQLSelect",
+        "dynamodb:Query",
+        "secretsmanager:ListSecrets",
+        "resource-groups:GetGroupQuery",
+        "resource-groups:ListGroupResources"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ManagePrivateSecret",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:CreateSecret",
+        "secretsmanager:DeleteSecret",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:TagResource",
+        "secretsmanager:UpdateSecret",
+        "secretsmanager:PutResourcePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Null": {
+          "aws:ResourceTag/AmazonDataZoneProject": "false"
+        }
+      }
+    },
+    {
+      "Sid": "ManageSharedSecret",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:CreateSecret",
+        "secretsmanager:DeleteSecret",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:TagResource",
+        "secretsmanager:UpdateSecret"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/for-use-with-all-datazone-projects": "true"
+        },
+        "Null": {
+          "aws:ResourceTag/AmazonDataZoneProject": "true"
+        }
+      }
+    },
+    {
+      "Sid": "RedshiftSecret",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:CreateSecret",
+        "secretsmanager:RotateSecret",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:UpdateSecret",
+        "secretsmanager:DeleteSecret",
+        "secretsmanager:TagResource"
+      ],
+      "Resource": "arn:aws:secretsmanager:*:*:secret:redshift!*"
+    },
+    {
+      "Sid": "Ecr",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:DescribeImages",
+        "ecr:GetAuthorizationToken",
+        "ecr:GetDownloadUrlForLayer"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CodeConnections",
+      "Effect": "Allow",
+      "Action": [
+        "codeconnections:*",
+        "codestar-connections:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "KmsListAndDescribe",
+      "Effect": "Allow",
+      "Action": [
+        "kms:DescribeKey",
+        "kms:ListAliases",
+        "kms:ListGrants"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DataZoneKms",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": "datazone.*.amazonaws.com"
+        },
+        "ForAnyValue:StringEquals": {
+          "kms:EncryptionContextKeys": "aws:datazone:domainId"
+        }
+      }
+    },
+    {
+      "Sid": "S3Kms",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": "s3.*.amazonaws.com"
+        },
+        "Null": {
+          "kms:EncryptionContext:aws:s3:arn": "false"
+        }
+      }
+    },
+    {
+      "Sid": "SchedulerKms",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": "scheduler.*.amazonaws.com"
+        },
+        "Null": {
+          "kms:EncryptionContext:aws:scheduler:schedule:arn": "false"
+        }
+      }
+    },
+    {
+      "Sid": "SecretsKms",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": "secretsmanager.*.amazonaws.com"
+        },
+        "Null": {
+          "kms:EncryptionContext:SecretARN": "false"
+        }
+      }
+    },
+    {
+      "Sid": "SageMakerKms",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:GenerateDataKey",
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": "sagemaker.*.amazonaws.com"
+        },
+        "Null": {
+          "kms:EncryptionContextKeys": "false"
+        }
+      }
+    },
+    {
+      "Sid": "SageMakerCreateGrant",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": "sagemaker.*.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "GlueKms",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:GenerateDataKey",
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": "glue.*.amazonaws.com"
+        },
+        "Null": {
+          "kms:EncryptionContextKeys": "false"
+        }
+      }
+    },
+    {
+      "Sid": "BedrockKms",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:Decrypt",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "kms:ViaService": "bedrock.*.amazonaws.com"
+        },
+        "Null": {
+          "kms:EncryptionContextKeys": "false"
+        }
+      }
+    },
+    {
+      "Sid": "CreateSG",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateSecurityGroup"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:security-group/*",
+        "arn:aws:ec2:*:*:vpc/*"
+      ]
+    },
+    {
+      "Sid": "SGManage",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteSecurityGroup",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:security-group/*"
+      ]
+    },
+    {
+      "Sid": "SGAuth",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:security-group/*"
+      ],
+      "Condition": {
+        "Null": {
+          "aws:ResourceTag/AmazonDataZoneProject": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Ec2DescribeOnly",
+      "Effect": "Allow",
+      "Action": "ec2:Describe*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "SGCreateTags",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": "arn:aws:ec2:*:*:security-group/*",
+      "Condition": {
+        "ForAllValues:StringLike": {
+          "aws:TagKeys": [
+            "AmazonDataZone*",
+            "aws:cloudformation:*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "VpcAccess",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DeleteNetworkInterface"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EC2TagAccessForVpc",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateTags",
+        "ec2:DeleteTags"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:network-interface/*"
+      ]
+    }
+  ]
+}
