@@ -137,7 +137,8 @@ export const getAndStoreHistoricalPolicy = (name: string, arn: string, versionId
 
       resolve(true);
     } catch (err) {
-      console.log(`Tried to write version ${versionId} for policy ${name}, but got error: '${err.message}'`);
+      const message = err instanceof Error ? err.message : String(err);
+      console.log(`Tried to write version ${versionId} for policy ${name}, but got error: '${message}'`);
       resolve(false);
     }
   })

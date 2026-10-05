@@ -1,8 +1,10 @@
 import { detailedDiff } from 'deep-object-diff';
-import managedPolicies from "./managedPolicies.json";
+import managedPoliciesData from "./managedPolicies.json";
 import { ManagedPolicies, ManagedPolicy } from '../src/types';
 
-const sortObjectByPropertyNames = (obj) => Object.keys(obj).sort().reduce((objEntries, key) => {
+const managedPolicies = managedPoliciesData as unknown as ManagedPolicies;
+
+const sortObjectByPropertyNames = (obj: ManagedPolicies) => Object.keys(obj).sort().reduce<ManagedPolicies>((objEntries, key) => {
   objEntries[key] = obj[key];
   return objEntries;
 }, {});

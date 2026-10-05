@@ -8,8 +8,9 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "gather-managed-policies": "ts-node --transpile-only --log-error process/gatherManagedPolicies.ts",
-    "backfill-managed-policies": "ts-node --transpile-only --log-error process/backfillManagedPoliciesHistory.ts",
+    "gather-managed-policies": "tsx process/gatherManagedPolicies.ts",
+    "backfill-managed-policies": "tsx process/backfillManagedPoliciesHistory.ts",
+    "typecheck": "tsc --project tsconfig.json",
     "build": "rm -rf dist/ && tsc --build src/",
     "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
@@ -33,14 +34,14 @@
   },
   "homepage": "https://github.com/tobilg/aws-iam-managed-policies#readme",
   "devDependencies": {
-    "@types/node": "^20.4.9",
-    "aws-sdk": "^2.1432.0",
-    "jsdoc": "^4.0.2",
-    "jsdoc-fresh": "^3.0.0",
+    "@types/node": "^22",
+    "aws-sdk": "^2.1693.0",
+    "jsdoc": "^4.0.5",
+    "jsdoc-fresh": "^6.0.0",
     "mkdirp": "^3.0.1",
-    "p-limit": "3.1.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.1.6"
+    "p-limit": "7.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "deep-object-diff": "^1.1.9"
