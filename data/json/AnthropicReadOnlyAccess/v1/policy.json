@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AnthropicReadOnlyWorkspace",
+      "Effect": "Allow",
+      "Action": [
+        "aws-external-anthropic:Get*",
+        "aws-external-anthropic:List*"
+      ],
+      "Resource": "arn:aws:aws-external-anthropic:*:*:workspace/*"
+    },
+    {
+      "Sid": "AnthropicReadOnlyResourceless",
+      "Effect": "Allow",
+      "Action": [
+        "aws-external-anthropic:GetAccountStatus",
+        "aws-external-anthropic:CallWithBearerToken"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
