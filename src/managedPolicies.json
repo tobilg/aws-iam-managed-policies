@@ -315175,8 +315175,8 @@
   },
   "AWSElasticLoadBalancingServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AWSElasticLoadBalancingServiceRolePolicy",
-    "latestVersionId": "v14",
-    "versionsCount": 14,
+    "latestVersionId": "v15",
+    "versionsCount": 15,
     "versions": {
       "v1": {
         "createdDate": "2017-09-19T22:19:04.000Z",
@@ -315722,10 +315722,61 @@
             }
           ]
         }
+      },
+      "v15": {
+        "createdDate": "2017-09-19T22:19:04.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeAddresses",
+                "ec2:DescribeCoipPools",
+                "ec2:DescribeInstances",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups",
+                "ec2:ValidateSecurityGroupQuotasForInterface",
+                "ec2:DescribeVpcs",
+                "ec2:DescribeInternetGateways",
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeClassicLinkInstances",
+                "ec2:DescribeVpcClassicLink",
+                "ec2:CreateSecurityGroup",
+                "ec2:CreateNetworkInterface",
+                "ec2:DeleteNetworkInterface",
+                "ec2:GetCoipPoolUsage",
+                "ec2:GetSecurityGroupsForVpc",
+                "ec2:ModifyNetworkInterfaceAttribute",
+                "ec2:AllocateAddress",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:AssociateAddress",
+                "ec2:DisassociateAddress",
+                "ec2:AttachNetworkInterface",
+                "ec2:DetachNetworkInterface",
+                "ec2:AssignPrivateIpAddresses",
+                "ec2:AssignIpv6Addresses",
+                "ec2:ReleaseAddress",
+                "ec2:UnassignIpv6Addresses",
+                "ec2:DescribeVpcPeeringConnections",
+                "ec2:DescribeAvailabilityZones",
+                "ec2:AllocateIpamPoolCidr",
+                "logs:CreateLogDelivery",
+                "logs:GetLogDelivery",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:ListLogDeliveries",
+                "outposts:GetOutpostInstanceTypes"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
       }
     },
     "createdDate": "2017-09-19T22:19:04.000Z",
-    "lastUpdatedDate": "2026-02-12T17:58:08.000Z"
+    "lastUpdatedDate": "2026-10-13T19:47:07.000Z"
   },
   "AWSElasticLoadBalancingClassicServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AWSElasticLoadBalancingClassicServiceRolePolicy",
@@ -1500355,8 +1500406,8 @@
   },
   "AIDevOpsConstellationAccessPolicy": {
     "arn": "arn:aws:iam::aws:policy/service-role/AIDevOpsConstellationAccessPolicy",
-    "latestVersionId": "v1",
-    "versionsCount": 1,
+    "latestVersionId": "v2",
+    "versionsCount": 2,
     "versions": {
       "v1": {
         "createdDate": "2026-08-05T16:27:17.000Z",
@@ -1500383,10 +1500434,51 @@
             }
           ]
         }
+      },
+      "v2": {
+        "createdDate": "2026-08-05T16:27:17.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "ConstellationScopedCoordination",
+              "Effect": "Allow",
+              "Action": [
+                "aidevops:CreateBacklogTask",
+                "aidevops:GetBacklogTask",
+                "aidevops:ListBacklogTasks",
+                "aidevops:GetAsset",
+                "aidevops:GetAssetContent",
+                "aidevops:GetAssetFile",
+                "aidevops:ListAssets",
+                "aidevops:ListAssetFiles",
+                "aidevops:ListExecutions",
+                "aidevops:ListJournalRecords",
+                "aidevops:SendMessage",
+                "aidevops:UpdateBacklogTask"
+              ],
+              "Resource": "arn:aws:aidevops:*:*:agentspace/*",
+              "Condition": {
+                "Null": {
+                  "aidevops:SourceAgentSpaceArn": "false",
+                  "aidevops:TargetAgentSpaceArn": "false"
+                }
+              }
+            },
+            {
+              "Sid": "ConstellationCoordination",
+              "Effect": "Allow",
+              "Action": [
+                "aidevops:GetAgentSpace"
+              ],
+              "Resource": "arn:aws:aidevops:*:*:agentspace/*"
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-08-05T16:27:17.000Z",
-    "lastUpdatedDate": "2026-08-05T16:27:17.000Z"
+    "lastUpdatedDate": "2026-10-13T20:37:07.000Z"
   },
   "AWSAgentRegistryServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AWSAgentRegistryServiceRolePolicy",
@@ -1511745,5 +1511837,47 @@
     },
     "createdDate": "2026-10-13T00:37:08.000Z",
     "lastUpdatedDate": "2026-10-13T00:37:08.000Z"
+  },
+  "SageMakerStudioDataAppsAccessRolePolicy": {
+    "arn": "arn:aws:iam::aws:policy/service-role/SageMakerStudioDataAppsAccessRolePolicy",
+    "latestVersionId": "v1",
+    "versionsCount": 1,
+    "versions": {
+      "v1": {
+        "createdDate": "2026-10-13T21:57:08.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DataZonePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "datazone:CreateSubscriptionRequest",
+                "datazone:GetListing",
+                "datazone:GetSubscription",
+                "datazone:ListGroupsForUser",
+                "datazone:ListProjects",
+                "datazone:ListSharedDataApps",
+                "datazone:ListSubscriptionGrants",
+                "datazone:ListSubscriptions",
+                "datazone:SearchListings"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "S3ControlReadPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetDataAccess",
+                "s3:ListCallerAccessGrants"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "createdDate": "2026-10-13T21:57:08.000Z",
+    "lastUpdatedDate": "2026-10-13T21:57:08.000Z"
   }
 }
