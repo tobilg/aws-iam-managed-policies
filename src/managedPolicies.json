@@ -1487219,8 +1487219,8 @@
   },
   "AWSApplicationMigrationFSxProxyPolicy": {
     "arn": "arn:aws:iam::aws:policy/service-role/AWSApplicationMigrationFSxProxyPolicy",
-    "latestVersionId": "v2",
-    "versionsCount": 2,
+    "latestVersionId": "v3",
+    "versionsCount": 3,
     "versions": {
       "v1": {
         "createdDate": "2026-05-31T13:12:14.000Z",
@@ -1487412,10 +1487412,139 @@
             }
           ]
         }
+      },
+      "v3": {
+        "createdDate": "2026-05-31T13:12:14.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "FSxSecret",
+              "Effect": "Allow",
+              "Action": "secretsmanager:GetSecretValue",
+              "Resource": "arn:aws:secretsmanager:*:*:secret:*",
+              "Condition": {
+                "Null": {
+                  "aws:ResourceTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            },
+            {
+              "Sid": "FSxDescribe",
+              "Effect": "Allow",
+              "Action": [
+                "fsx:DescribeVolumes",
+                "fsx:DescribeStorageVirtualMachines",
+                "fsx:DescribeSnapshots"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "FSxCreateVolume",
+              "Effect": "Allow",
+              "Action": "fsx:CreateVolume",
+              "Resource": "arn:aws:fsx:*:*:volume/*/*",
+              "Condition": {
+                "Null": {
+                  "aws:RequestTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            },
+            {
+              "Sid": "FSxCreateVolumeSVM",
+              "Effect": "Allow",
+              "Action": "fsx:CreateVolume",
+              "Resource": "arn:aws:fsx:*:*:storage-virtual-machine/*/*"
+            },
+            {
+              "Sid": "FSxTagging",
+              "Effect": "Allow",
+              "Action": [
+                "fsx:TagResource",
+                "fsx:UntagResource"
+              ],
+              "Resource": "arn:aws:fsx:*:*:volume/*/*",
+              "Condition": {
+                "Null": {
+                  "aws:ResourceTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            },
+            {
+              "Sid": "FSxUpdateAndDeleteVolume",
+              "Effect": "Allow",
+              "Action": [
+                "fsx:UpdateVolume",
+                "fsx:DeleteVolume"
+              ],
+              "Resource": "arn:aws:fsx:*:*:volume/*/*",
+              "Condition": {
+                "Null": {
+                  "aws:ResourceTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            },
+            {
+              "Sid": "FSxCreateSnapshot",
+              "Effect": "Allow",
+              "Action": "fsx:CreateSnapshot",
+              "Resource": "arn:aws:fsx:*:*:snapshot/*/*",
+              "Condition": {
+                "Null": {
+                  "aws:RequestTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            },
+            {
+              "Sid": "FSxCreateSnapshotVolume",
+              "Effect": "Allow",
+              "Action": "fsx:CreateSnapshot",
+              "Resource": "arn:aws:fsx:*:*:volume/*/*",
+              "Condition": {
+                "Null": {
+                  "aws:ResourceTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            },
+            {
+              "Sid": "FSxDeleteSnapshot",
+              "Effect": "Allow",
+              "Action": "fsx:DeleteSnapshot",
+              "Resource": "arn:aws:fsx:*:*:snapshot/*/*",
+              "Condition": {
+                "Null": {
+                  "aws:ResourceTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            },
+            {
+              "Sid": "FSxTagSnapshot",
+              "Effect": "Allow",
+              "Action": "fsx:TagResource",
+              "Resource": "arn:aws:fsx:*:*:snapshot/*/*",
+              "Condition": {
+                "Null": {
+                  "aws:RequestTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            },
+            {
+              "Sid": "FSxListTagsSnapshot",
+              "Effect": "Allow",
+              "Action": "fsx:ListTagsForResource",
+              "Resource": "arn:aws:fsx:*:*:snapshot/*/*",
+              "Condition": {
+                "Null": {
+                  "aws:ResourceTag/AWSApplicationMigrationServiceManaged": "false"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-05-31T13:12:14.000Z",
-    "lastUpdatedDate": "2026-08-09T12:17:24.000Z"
+    "lastUpdatedDate": "2026-10-25T09:47:07.000Z"
   },
   "AWSApplicationMigrationFSxProxyVPCPolicy": {
     "arn": "arn:aws:iam::aws:policy/service-role/AWSApplicationMigrationFSxProxyVPCPolicy",
