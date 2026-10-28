@@ -559144,8 +559144,8 @@
   },
   "AWSServiceRoleForImageBuilder": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AWSServiceRoleForImageBuilder",
-    "latestVersionId": "v28",
-    "versionsCount": 28,
+    "latestVersionId": "v29",
+    "versionsCount": 29,
     "versions": {
       "v1": {
         "createdDate": "2019-11-29T22:02:13.000Z",
@@ -567260,10 +567260,508 @@
             }
           ]
         }
+      },
+      "v29": {
+        "createdDate": "2019-11-29T22:02:13.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "ec2:RegisterImage",
+              "Resource": [
+                "arn:aws:ec2:*::image/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ec2:RegisterImage",
+              "Resource": [
+                "arn:aws:ec2:*::snapshot/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "ec2:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:RunInstances"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*",
+                "arn:aws:ec2:*::snapshot/*",
+                "arn:aws:ec2:*:*:subnet/*",
+                "arn:aws:ec2:*:*:network-interface/*",
+                "arn:aws:ec2:*:*:security-group/*",
+                "arn:aws:ec2:*:*:key-pair/*",
+                "arn:aws:ec2:*:*:launch-template/*",
+                "arn:aws:license-manager:*:*:license-configuration:*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:RunInstances"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:volume/*",
+                "arn:aws:ec2:*:*:instance/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": [
+                    "EC2 Image Builder",
+                    "EC2 Fast Launch"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": [
+                    "ec2.amazonaws.com",
+                    "ec2.amazonaws.com.cn",
+                    "vmie.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:StopInstances",
+                "ec2:StartInstances",
+                "ec2:TerminateInstances"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "ec2:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CopyImage",
+                "ec2:CreateImage",
+                "ec2:CreateLaunchTemplate",
+                "ec2:DeregisterImage",
+                "ec2:DescribeImages",
+                "ec2:DescribeInstanceAttribute",
+                "ec2:DescribeInstanceStatus",
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceTypeOfferings",
+                "ec2:DescribeInstanceTypes",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeTags",
+                "ec2:ModifyImageAttribute",
+                "ec2:DescribeImportImageTasks",
+                "ec2:DescribeExportImageTasks",
+                "ec2:DescribeSnapshots",
+                "ec2:DescribeHosts"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:ModifySnapshotAttribute"
+              ],
+              "Resource": "arn:aws:ec2:*::snapshot/*",
+              "Condition": {
+                "StringEquals": {
+                  "ec2:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateTags"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "ec2:CreateAction": [
+                    "RunInstances",
+                    "CreateImage"
+                  ],
+                  "aws:RequestTag/CreatedBy": [
+                    "EC2 Image Builder",
+                    "EC2 Fast Launch"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateTags"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*",
+                "arn:aws:ec2:*:*:export-image-task/*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateTags"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::snapshot/*",
+                "arn:aws:ec2:*:*:launch-template/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": [
+                    "EC2 Image Builder",
+                    "EC2 Fast Launch"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "license-manager:UpdateLicenseSpecificationsForResource"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sns:Publish"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:ListCommands",
+                "ssm:ListCommandInvocations",
+                "ssm:AddTagsToResource",
+                "ssm:DescribeInstanceInformation",
+                "ssm:GetAutomationExecution",
+                "ssm:StopAutomationExecution",
+                "ssm:ListInventoryEntries",
+                "ssm:SendAutomationSignal",
+                "ssm:DescribeInstanceAssociationsStatus",
+                "ssm:DescribeAssociationExecutions",
+                "ssm:GetCommandInvocation"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:SendCommand",
+              "Resource": [
+                "arn:aws:ssm:*:*:document/AWS-RunPowerShellScript",
+                "arn:aws:ssm:*:*:document/AWS-RunShellScript",
+                "arn:aws:ssm:*:*:document/AWSEC2-RunSysprep",
+                "arn:aws:s3:::*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:SendCommand"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:instance/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "ssm:resourceTag/CreatedBy": [
+                    "EC2 Image Builder"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:CreateAssociation",
+                "ssm:DeleteAssociation"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:document/AWS-GatherSoftwareInventory",
+                "arn:aws:ssm:*:*:association/*",
+                "arn:aws:ec2:*:*:instance/*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncryptFrom",
+                "kms:ReEncryptTo",
+                "kms:GenerateDataKeyWithoutPlaintext"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ForAllValues:StringEquals": {
+                  "kms:EncryptionContextKeys": [
+                    "aws:ebs:id"
+                  ]
+                },
+                "StringLike": {
+                  "kms:ViaService": [
+                    "ec2.*.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kms:DescribeKey"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringLike": {
+                  "kms:ViaService": [
+                    "ec2.*.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "kms:CreateGrant",
+              "Resource": "*",
+              "Condition": {
+                "Bool": {
+                  "kms:GrantIsForAWSResource": true
+                },
+                "StringLike": {
+                  "kms:ViaService": [
+                    "ec2.*.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "sts:AssumeRole",
+              "Resource": "arn:aws:iam::*:role/EC2ImageBuilderDistributionCrossAccountRole"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents"
+              ],
+              "Resource": "arn:aws:logs:*:*:log-group:/aws/imagebuilder/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateLaunchTemplateVersion",
+                "ec2:DescribeLaunchTemplates",
+                "ec2:ModifyLaunchTemplate",
+                "ec2:DescribeLaunchTemplateVersions"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:ExportImage"
+              ],
+              "Resource": "arn:aws:ec2:*::image/*",
+              "Condition": {
+                "StringEquals": {
+                  "ec2:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:ExportImage"
+              ],
+              "Resource": "arn:aws:ec2:*:*:export-image-task/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CancelExportTask"
+              ],
+              "Resource": "arn:aws:ec2:*:*:export-image-task/*",
+              "Condition": {
+                "StringEquals": {
+                  "ec2:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "iam:CreateServiceLinkedRole",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": [
+                    "agentless.inspector2.amazonaws.com",
+                    "ami.inspector2.amazonaws.com",
+                    "ec2fastlaunch.amazonaws.com",
+                    "inspector2.amazonaws.com",
+                    "ssm.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:EnableFastLaunch"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*",
+                "arn:aws:ec2:*:*:launch-template/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "ec2:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:AttachImageWatermark"
+              ],
+              "Resource": "arn:aws:ec2:*::image/*",
+              "Condition": {
+                "StringEquals": {
+                  "ec2:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "inspector2:ListCoverage",
+                "inspector2:ListFindings"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "inspector2:StartOnDemandScan",
+                "inspector2:GetOnDemandScanStatus",
+                "inspector2:ListOnDemandScans"
+              ],
+              "Resource": [
+                "arn:aws:inspector2:*:*:*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ecr:CreateRepository"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ecr:TagResource"
+              ],
+              "Resource": "arn:aws:ecr:*:*:repository/image-builder-*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ecr:BatchDeleteImage"
+              ],
+              "Resource": "arn:aws:ecr:*:*:repository/image-builder-*",
+              "Condition": {
+                "StringEquals": {
+                  "ecr:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "events:DeleteRule",
+                "events:DescribeRule",
+                "events:PutRule",
+                "events:PutTargets",
+                "events:RemoveTargets"
+              ],
+              "Resource": [
+                "arn:aws:events:*:*:rule/ImageBuilder-*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetParameter",
+                "ssm:PutParameter"
+              ],
+              "Resource": "arn:aws:ssm:*:*:parameter/imagebuilder/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetParameter"
+              ],
+              "Resource": "arn:aws:ssm:*::parameter/aws/service/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "imagebuilder:StartImagePipelineExecution",
+              "Resource": "arn:aws:imagebuilder:*:*:image-pipeline/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "imagebuilder:TagResource",
+              "Resource": "arn:aws:imagebuilder:*:*:image-pipeline/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2019-11-29T22:02:13.000Z",
-    "lastUpdatedDate": "2026-07-09T15:27:28.000Z"
+    "lastUpdatedDate": "2026-10-27T23:37:07.000Z"
   },
   "EC2InstanceProfileForImageBuilder": {
     "arn": "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilder",
@@ -1064864,8 +1065362,8 @@
   },
   "AWSSystemsManagerEnableConfigRecordingExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSSystemsManagerEnableConfigRecordingExecutionPolicy",
-    "latestVersionId": "v1",
-    "versionsCount": 1,
+    "latestVersionId": "v2",
+    "versionsCount": 2,
     "versions": {
       "v1": {
         "createdDate": "2024-06-26T09:40:20.000Z",
@@ -1064948,15 +1065446,110 @@
             }
           ]
         }
+      },
+      "v2": {
+        "createdDate": "2024-06-26T09:40:20.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "S3BucketCreatePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "s3:CreateBucket",
+                "s3:PutBucketPublicAccessBlock",
+                "s3:ListBucket",
+                "s3:PutBucketPolicy",
+                "s3:PutEncryptionConfiguration"
+              ],
+              "Resource": [
+                "arn:aws:s3:::aws-quick-setup-config-recording-*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "SNSTopicsListPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "sns:ListTopics"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "DefaultSNSTopicCreatePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "sns:CreateTopic"
+              ],
+              "Resource": "arn:aws:sns:*:*:ConfigRecording-Default-Topic"
+            },
+            {
+              "Sid": "ConfigureAndStartConfigurationRecorderPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "config:DescribeConfigurationRecorders",
+                "config:DescribeDeliveryChannels",
+                "config:PutConfigurationRecorder",
+                "config:PutDeliveryChannel",
+                "config:StartConfigurationRecorder"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "GetAndPassConfigSLRPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "iam:GetRole",
+                "iam:PassRole"
+              ],
+              "Resource": [
+                "arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig",
+                "arn:aws:iam::*:role/AWSServiceRoleForConfig"
+              ]
+            },
+            {
+              "Sid": "CreateConfigSLRPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateServiceLinkedRole"
+              ],
+              "Resource": [
+                "arn:aws:iam::*:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": "config.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:GetCalendarState",
+              "Resource": "arn:aws:ssm:*:*:document/*",
+              "Condition": {
+                "StringLike": {
+                  "aws:userid": "*:SystemsManager-Automation-ChangeCalendar-Check"
+                },
+                "StringEquals": {
+                  "ssm:DocumentType": "ChangeCalendar"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2024-06-26T09:40:20.000Z",
-    "lastUpdatedDate": "2024-06-26T09:40:20.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:09.000Z"
   },
   "AWSSystemsManagerEnableExplorerExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSSystemsManagerEnableExplorerExecutionPolicy",
-    "latestVersionId": "v1",
-    "versionsCount": 1,
+    "latestVersionId": "v2",
+    "versionsCount": 2,
     "versions": {
       "v1": {
         "createdDate": "2024-06-26T09:42:47.000Z",
@@ -1065009,10 +1065602,75 @@
             }
           ]
         }
+      },
+      "v2": {
+        "createdDate": "2024-06-26T09:42:47.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "CreateSystemsManagerSLRPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateServiceLinkedRole"
+              ],
+              "Resource": [
+                "arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": "ssm.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "ReadOnlyPermissionsForEnablingExplorer",
+              "Effect": "Allow",
+              "Action": [
+                "iam:ListRoles",
+                "config:DescribeConfigurationRecorders",
+                "compute-optimizer:GetEnrollmentStatus",
+                "support:DescribeTrustedAdvisorChecks"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "SSMExplorerServiceSettingsPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:UpdateServiceSetting",
+                "ssm:GetServiceSetting"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:servicesetting/ssm/opsitem/ssm-patchmanager",
+                "arn:aws:ssm:*:*:servicesetting/ssm/opsitem/EC2",
+                "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ExplorerOnboarded",
+                "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/Association",
+                "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ComputeOptimizer",
+                "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/ConfigCompliance",
+                "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/OpsData-TrustedAdvisor",
+                "arn:aws:ssm:*:*:servicesetting/ssm/opsdata/SupportCenterCase"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:GetCalendarState",
+              "Resource": "arn:aws:ssm:*:*:document/*",
+              "Condition": {
+                "StringLike": {
+                  "aws:userid": "*:SystemsManager-Automation-ChangeCalendar-Check"
+                },
+                "StringEquals": {
+                  "ssm:DocumentType": "ChangeCalendar"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2024-06-26T09:42:47.000Z",
-    "lastUpdatedDate": "2024-06-26T09:42:47.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:08.000Z"
   },
   "AWSQuickSetupDevOpsGuruPermissionsBoundary": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupDevOpsGuruPermissionsBoundary",
@@ -1083905,8 +1084563,8 @@
   },
   "AWSQuickSetupEnableDHMCExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupEnableDHMCExecutionPolicy",
-    "latestVersionId": "v1",
-    "versionsCount": 1,
+    "latestVersionId": "v2",
+    "versionsCount": 2,
     "versions": {
       "v1": {
         "createdDate": "2024-11-15T21:27:47.000Z",
@@ -1083953,15 +1084611,74 @@
             }
           ]
         }
+      },
+      "v2": {
+        "createdDate": "2024-11-15T21:27:47.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateRole",
+                "iam:GetRole"
+              ],
+              "Resource": "arn:aws:iam::*:role/AWS-QuickSetup-SSM-DefaultEC2MgmtRole-*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": "arn:aws:iam::*:role/AWS-QuickSetup-SSM-DefaultEC2MgmtRole-*",
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": "ssm.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iam:AttachRolePolicy"
+              ],
+              "Resource": "arn:aws:iam::*:role/AWS-QuickSetup-SSM-DefaultEC2MgmtRole-*",
+              "Condition": {
+                "ArnEquals": {
+                  "iam:PolicyARN": "arn:aws:iam::aws:policy/AmazonSSMManagedEC2InstanceDefaultPolicy"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetServiceSetting",
+                "ssm:UpdateServiceSetting"
+              ],
+              "Resource": "arn:aws:ssm:*:*:servicesetting/ssm/managed-instance/default-ec2-instance-management-role"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:GetCalendarState",
+              "Resource": "arn:aws:ssm:*:*:document/*",
+              "Condition": {
+                "StringLike": {
+                  "aws:userid": "*:SystemsManager-Automation-ChangeCalendar-Check"
+                },
+                "StringEquals": {
+                  "ssm:DocumentType": "ChangeCalendar"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2024-11-15T21:27:47.000Z",
-    "lastUpdatedDate": "2024-11-15T21:27:47.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:09.000Z"
   },
   "AWSQuickSetupManagedInstanceProfileExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupManagedInstanceProfileExecutionPolicy",
-    "latestVersionId": "v8",
-    "versionsCount": 8,
+    "latestVersionId": "v9",
+    "versionsCount": 9,
     "versions": {
       "v1": {
         "createdDate": "2024-11-15T21:51:23.000Z",
@@ -1085053,15 +1085770,236 @@
             }
           ]
         }
+      },
+      "v9": {
+        "createdDate": "2024-11-15T21:51:23.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "ReadOnlyPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "iam:GetInstanceProfile",
+                "iam:ListInstanceProfilesForRole"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "DefaultInstanceRoleManagePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateRole",
+                "iam:GetRole"
+              ],
+              "Resource": "arn:aws:iam::*:role/AmazonSSMRoleForInstancesQuickSetup"
+            },
+            {
+              "Sid": "DefaultInstanceProfileCreatePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateInstanceProfile"
+              ],
+              "Resource": [
+                "arn:aws:iam::*:instance-profile/AmazonSSMRoleForInstancesQuickSetup"
+              ]
+            },
+            {
+              "Sid": "DefaultInstanceRoleAddPermissions",
+              "Effect": "Allow",
+              "Action": "iam:AddRoleToInstanceProfile",
+              "Resource": [
+                "arn:aws:iam::*:instance-profile/AmazonSSMRoleForInstancesQuickSetup"
+              ]
+            },
+            {
+              "Sid": "DefaultInstanceProfileAssociationPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:AssociateIamInstanceProfile"
+              ],
+              "Resource": "arn:aws:ec2:*:*:instance/*",
+              "Condition": {
+                "Null": {
+                  "ec2:InstanceProfile": "true"
+                },
+                "ArnLike": {
+                  "ec2:NewInstanceProfile": "arn:aws:iam::*:instance-profile/AmazonSSMRoleForInstancesQuickSetup"
+                }
+              }
+            },
+            {
+              "Sid": "DefaultInstanceRolePassToEC2AndSSMPermissions",
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": "arn:aws:iam::*:role/AmazonSSMRoleForInstancesQuickSetup",
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": [
+                    "ec2.amazonaws.com",
+                    "ssm.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "InstanceManagementPoliciesAttachAmazonSSMManagedInstanceCore",
+              "Effect": "Allow",
+              "Action": "iam:AttachRolePolicy",
+              "Condition": {
+                "ArnEquals": {
+                  "iam:PolicyARN": [
+                    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+                    "arn:aws:iam::aws:policy/AmazonSSMPatchAssociation",
+                    "arn:aws:iam::aws:policy/AWSQuickSetupPatchPolicyBaselineAccess",
+                    "arn:aws:iam::aws:policy/AmazonElasticFileSystemsUtils",
+                    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+                  ]
+                }
+              },
+              "Resource": "arn:aws:iam::*:role/*"
+            },
+            {
+              "Sid": "InstanceProfileAssociationEc2Permissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeIamInstanceProfileAssociations",
+                "ec2:DescribeInstances"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "SSMInstanceManagement",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DescribeInstanceInformation",
+                "ssm:UpdateManagedInstanceRole"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "TagRoles",
+              "Effect": "Allow",
+              "Action": "iam:TagRole",
+              "Resource": "arn:aws:iam::*:role/*",
+              "Condition": {
+                "ForAllValues:StringLike": {
+                  "aws:TagKeys": "QSConfigId-*"
+                }
+              }
+            },
+            {
+              "Sid": "DenyModifyQuickSetupAutomationRoles",
+              "Effect": "Deny",
+              "Action": [
+                "iam:TagRole",
+                "iam:AttachRolePolicy"
+              ],
+              "Resource": "arn:aws:iam::*:role/AWS-QuickSetup-AutomationRole-*"
+            },
+            {
+              "Sid": "AutomationsStartWithTagPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:StartAutomationExecution",
+                "ssm:AddTagsToResource"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:automation-execution/*",
+                "arn:aws:ssm:*:*:document/AWS-AttachIAMToInstance*",
+                "arn:aws:ssm:*:*:automation-definition/AWS-AttachIAMToInstance*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/InvokedBy": [
+                    "AWSQuickSetupType-ManageInstanceProfile"
+                  ],
+                  "aws:ResourceTag/InvokedBy": [
+                    "AWSQuickSetupType-ManageInstanceProfile"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "AutomationsGetPermissions",
+              "Effect": "Allow",
+              "Action": "ssm:GetAutomationExecution",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/InvokedBy": [
+                    "AWSQuickSetupType-ManageInstanceProfile"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "GetQuickSetupAutomationAssumeRoles",
+              "Effect": "Allow",
+              "Action": "iam:GetRole",
+              "Resource": [
+                "arn:aws:iam::*:role/AWS-QuickSetup-*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:ResourceTag/QuickSetupDocument": [
+                    "AWSQuickSetupType-SSM",
+                    "AWSQuickSetupType-SSMHostMgmt",
+                    "AWSQuickSetupType-PatchPolicy",
+                    "AWSQuickSetupType-Distributor",
+                    "AWSQuickSetupType-CWASetup"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "PassQuickSetupAutomationAssumeRoles",
+              "Effect": "Allow",
+              "Action": [
+                "iam:PassRole"
+              ],
+              "Resource": [
+                "arn:aws:iam::*:role/AWS-QuickSetup-*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": [
+                    "ssm.amazonaws.com"
+                  ],
+                  "iam:ResourceTag/QuickSetupDocument": [
+                    "AWSQuickSetupType-SSM",
+                    "AWSQuickSetupType-SSMHostMgmt",
+                    "AWSQuickSetupType-PatchPolicy",
+                    "AWSQuickSetupType-Distributor",
+                    "AWSQuickSetupType-CWASetup"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:GetCalendarState",
+              "Resource": "arn:aws:ssm:*:*:document/*",
+              "Condition": {
+                "StringLike": {
+                  "aws:userid": "*:SystemsManager-Automation-ChangeCalendar-Check"
+                },
+                "StringEquals": {
+                  "ssm:DocumentType": "ChangeCalendar"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2024-11-15T21:51:23.000Z",
-    "lastUpdatedDate": "2026-06-03T14:12:12.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:09.000Z"
   },
   "AWSQuickSetupSSMLifecycleManagementExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupSSMLifecycleManagementExecutionPolicy",
-    "latestVersionId": "v4",
-    "versionsCount": 4,
+    "latestVersionId": "v5",
+    "versionsCount": 5,
     "versions": {
       "v1": {
         "createdDate": "2024-11-15T21:55:57.000Z",
@@ -1085273,10 +1086211,76 @@
             }
           ]
         }
+      },
+      "v5": {
+        "createdDate": "2024-11-15T21:55:57.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetAutomationExecution"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/QuickSetupDocument": "AWSQuickSetupType-SSM"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": "arn:aws:iam::*:role/AWS-QuickSetup-SSM-ManageResources*",
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": [
+                    "ssm.amazonaws.com"
+                  ],
+                  "iam:ResourceTag/QuickSetupDocument": [
+                    "AWSQuickSetupType-SSM"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:StartAutomationExecution",
+                "ssm:AddTagsToResource"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:automation-definition/AWSQuickSetupType-SSM-ManageResources*",
+                "arn:aws:ssm:*:*:document/AWSQuickSetupType-SSM-ManageResources*",
+                "arn:aws:ssm:*:*:automation-execution/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/QuickSetupDocument": "AWSQuickSetupType-SSM",
+                  "aws:ResourceTag/QuickSetupDocument": "AWSQuickSetupType-SSM"
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:GetCalendarState",
+              "Resource": "arn:aws:ssm:*:*:document/*",
+              "Condition": {
+                "StringLike": {
+                  "aws:userid": "*:SystemsManager-Automation-ChangeCalendar-Check"
+                },
+                "StringEquals": {
+                  "ssm:DocumentType": "ChangeCalendar"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2024-11-15T21:55:57.000Z",
-    "lastUpdatedDate": "2026-02-12T18:01:58.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:08.000Z"
   },
   "AWSQuickSetupSSMDeploymentS3BucketRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupSSMDeploymentS3BucketRolePolicy",
@@ -1085321,8 +1086325,8 @@
   },
   "AWSQuickSetupEnableAREXExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupEnableAREXExecutionPolicy",
-    "latestVersionId": "v1",
-    "versionsCount": 1,
+    "latestVersionId": "v2",
+    "versionsCount": 2,
     "versions": {
       "v1": {
         "createdDate": "2024-11-15T22:45:53.000Z",
@@ -1085388,10 +1086392,88 @@
             }
           ]
         }
+      },
+      "v2": {
+        "createdDate": "2024-11-15T22:45:53.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowReadActions",
+              "Effect": "Allow",
+              "Action": [
+                "resource-explorer-2:GetDefaultView",
+                "resource-explorer-2:GetIndex",
+                "resource-explorer-2:ListIndexes",
+                "resource-explorer-2:ListViews"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowUpdateExistingIndexAndAssociateDefaultView",
+              "Effect": "Allow",
+              "Action": [
+                "resource-explorer-2:UpdateIndexType",
+                "resource-explorer-2:AssociateDefaultView"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowCreateViewAndIndex",
+              "Effect": "Allow",
+              "Action": [
+                "resource-explorer-2:CreateView",
+                "resource-explorer-2:CreateIndex",
+                "resource-explorer-2:TagResource"
+              ],
+              "Resource": [
+                "arn:aws:resource-explorer-2:*:*:view/all-resources/*",
+                "arn:aws:resource-explorer-2:*:*:index/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/Type": "QuickSetup",
+                  "aws:ResourceTag/Type": "QuickSetup"
+                },
+                "ForAllValues:StringEquals": {
+                  "aws:TagKeys": "Type"
+                }
+              }
+            },
+            {
+              "Sid": "AllowCreateServiceLinkedRole",
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateServiceLinkedRole"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": [
+                    "resource-explorer-2.amazonaws.com"
+                  ]
+                }
+              },
+              "Resource": "arn:aws:iam::*:role/aws-service-role/resource-explorer-2.amazonaws.com/AWSServiceRoleForResourceExplorer"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:GetCalendarState",
+              "Resource": "arn:aws:ssm:*:*:document/*",
+              "Condition": {
+                "StringLike": {
+                  "aws:userid": "*:SystemsManager-Automation-ChangeCalendar-Check"
+                },
+                "StringEquals": {
+                  "ssm:DocumentType": "ChangeCalendar"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2024-11-15T22:45:53.000Z",
-    "lastUpdatedDate": "2024-11-15T22:45:53.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:09.000Z"
   },
   "AWSQuickSetupSSMManageResourcesExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupSSMManageResourcesExecutionPolicy",
@@ -1373433,8 +1374515,8 @@
   },
   "AmazonInspector2FullAccess_v2": {
     "arn": "arn:aws:iam::aws:policy/AmazonInspector2FullAccess_v2",
-    "latestVersionId": "v9",
-    "versionsCount": 9,
+    "latestVersionId": "v10",
+    "versionsCount": 10,
     "versions": {
       "v1": {
         "createdDate": "2025-07-03T16:07:07.000Z",
@@ -1374105,10 +1375187,151 @@
             }
           ]
         }
+      },
+      "v10": {
+        "createdDate": "2025-07-03T16:07:07.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowFullAccessToInspectorApis",
+              "Effect": "Allow",
+              "Action": "inspector2:*",
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowAccessToCodeGuruApis",
+              "Effect": "Allow",
+              "Action": [
+                "codeguru-security:BatchGetFindings",
+                "codeguru-security:GetAccountConfiguration"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowAccessToCreateSlr",
+              "Effect": "Allow",
+              "Action": "iam:CreateServiceLinkedRole",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": [
+                    "agentless.inspector2.amazonaws.com",
+                    "ami.inspector2.amazonaws.com",
+                    "inspector2.amazonaws.com",
+                    "thirdparty.inspector2.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "AllowServicePrincipalBasedAccessToOrganizationApis",
+              "Effect": "Allow",
+              "Action": [
+                "organizations:EnableAWSServiceAccess",
+                "organizations:RegisterDelegatedAdministrator",
+                "organizations:ListDelegatedAdministrators"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "organizations:ServicePrincipal": [
+                    "inspector2.amazonaws.com",
+                    "agentless.inspector2.amazonaws.com",
+                    "thirdparty.inspector2.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "AllowOrganizationalBasedAccessToOrganizationApis",
+              "Effect": "Allow",
+              "Action": [
+                "organizations:DescribeOrganizationalUnit"
+              ],
+              "Resource": "arn:aws:organizations::*:ou/o-*/ou-*"
+            },
+            {
+              "Sid": "AllowAccountsBasedAccessToOrganizationApis",
+              "Effect": "Allow",
+              "Action": [
+                "organizations:DescribeAccount"
+              ],
+              "Resource": "arn:aws:organizations::*:account/o-*/*"
+            },
+            {
+              "Sid": "AllowAccessToOrganizationApis",
+              "Effect": "Allow",
+              "Action": [
+                "organizations:ListAWSServiceAccessForOrganization",
+                "organizations:DescribeOrganization"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowListPoliciesForInspectorPolicyType",
+              "Effect": "Allow",
+              "Action": "organizations:ListPolicies",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "organizations:PolicyType": [
+                    "INSPECTOR_POLICY"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "AllowDescribeResourcePolicyForDelegation",
+              "Effect": "Allow",
+              "Action": "organizations:DescribeResourcePolicy",
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowDescribeEffectivePolicyForInspector",
+              "Effect": "Allow",
+              "Action": "organizations:DescribeEffectivePolicy",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "organizations:PolicyType": [
+                    "INSPECTOR_POLICY"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "AllowConfigConnectorWriteAndList",
+              "Effect": "Allow",
+              "Action": [
+                "config:PutConnector",
+                "config:ListConnectors"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowConfigConnectorRead",
+              "Effect": "Allow",
+              "Action": "config:GetConnector",
+              "Resource": "arn:aws:config:*:*:connector/*"
+            },
+            {
+              "Sid": "AllowCreateConfigThirdPartySLR",
+              "Effect": "Allow",
+              "Action": "iam:CreateServiceLinkedRole",
+              "Resource": "arn:aws:iam::*:role/aws-service-role/thirdparty.config.amazonaws.com/AWSServiceRoleForConfigThirdParty",
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": "thirdparty.config.amazonaws.com"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2025-07-03T16:07:07.000Z",
-    "lastUpdatedDate": "2026-07-08T19:12:18.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:09.000Z"
   },
   "SageMakerStudioAdminProjectUserRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/SageMakerStudioAdminProjectUserRolePolicy",
@@ -1388671,8 +1389894,8 @@
   },
   "AWSQuickSetupStartStopInstancesExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupStartStopInstancesExecutionPolicy",
-    "latestVersionId": "v6",
-    "versionsCount": 6,
+    "latestVersionId": "v7",
+    "versionsCount": 7,
     "versions": {
       "v1": {
         "createdDate": "2025-08-08T12:04:07.000Z",
@@ -1388937,15 +1390160,94 @@
             }
           ]
         }
+      },
+      "v7": {
+        "createdDate": "2025-08-08T12:04:07.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceStatus",
+                "ec2:DescribeRegions",
+                "ec2:DescribeTags"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+              ],
+              "Resource": "arn:aws:ec2:*:*:instance/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetCalendarState"
+              ],
+              "Resource": "arn:aws:ssm:*:*:document/AWSQuickSetup-ChangeCalendar*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:StartAssociationsOnce",
+                "ssm:StartAutomationExecution"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:association/*",
+                "arn:aws:ssm:*:*:document/AWSQuickSetupType-Scheduler-ApplyInstanceState",
+                "arn:aws:ssm:*:*:automation-execution/*",
+                "arn:aws:ssm:*:*:automation-definition/AWSQuickSetupType-Scheduler-ApplyInstanceState*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": [
+                "arn:aws:iam::*:role/AWS-QuickSetup*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": [
+                    "ssm.amazonaws.com"
+                  ]
+                },
+                "ArnLike": {
+                  "iam:AssociatedResourceARN": [
+                    "arn:aws:ssm:*::document/AWSQuickSetupType-Scheduler-ApplyInstanceState",
+                    "arn:aws:ssm:*:*:association/*"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:GetCalendarState",
+              "Resource": "arn:aws:ssm:*:*:document/*",
+              "Condition": {
+                "StringLike": {
+                  "aws:userid": "*:SystemsManager-Automation-ChangeCalendar-Check"
+                },
+                "StringEquals": {
+                  "ssm:DocumentType": "ChangeCalendar"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2025-08-08T12:04:07.000Z",
-    "lastUpdatedDate": "2026-02-12T17:57:46.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:08.000Z"
   },
   "AWSQuickSetupStartSSMAssociationsExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/AWSQuickSetupStartSSMAssociationsExecutionPolicy",
-    "latestVersionId": "v7",
-    "versionsCount": 7,
+    "latestVersionId": "v8",
+    "versionsCount": 8,
     "versions": {
       "v1": {
         "createdDate": "2025-08-08T12:04:07.000Z",
@@ -1389142,10 +1390444,63 @@
             }
           ]
         }
+      },
+      "v8": {
+        "createdDate": "2025-08-08T12:04:07.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:StartAutomationExecution"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:document/AWSQuickSetupType-Scheduler-ChangeCalendarState",
+                "arn:aws:ssm:*:*:automation-execution/*",
+                "arn:aws:ssm:*:*:automation-definition/AWSQuickSetupType-Scheduler-ChangeCalendarState*"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": [
+                "arn:aws:iam::*:role/AWS-QuickSetup*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": [
+                    "ssm.amazonaws.com"
+                  ]
+                },
+                "ArnLike": {
+                  "iam:AssociatedResourceARN": [
+                    "arn:aws:ssm:*:*:document/AWSQuickSetupType-Scheduler-ChangeCalendarState",
+                    "arn:aws:ssm:*:*:automation-execution/*",
+                    "arn:aws:ssm:*:*:automation-definition/AWSQuickSetupType-Scheduler-ChangeCalendarState*"
+                  ]
+                }
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": "ssm:GetCalendarState",
+              "Resource": "arn:aws:ssm:*:*:document/*",
+              "Condition": {
+                "StringLike": {
+                  "aws:userid": "*:SystemsManager-Automation-ChangeCalendar-Check"
+                },
+                "StringEquals": {
+                  "ssm:DocumentType": "ChangeCalendar"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2025-08-08T12:04:07.000Z",
-    "lastUpdatedDate": "2026-03-05T16:57:14.000Z"
+    "lastUpdatedDate": "2026-10-27T15:57:08.000Z"
   },
   "ROSASharedVPCRoute53Policy": {
     "arn": "arn:aws:iam::aws:policy/ROSASharedVPCRoute53Policy",
@@ -1476464,8 +1477819,8 @@
   },
   "AIDevOpsAgentAccessPolicy": {
     "arn": "arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy",
-    "latestVersionId": "v11",
-    "versionsCount": 11,
+    "latestVersionId": "v12",
+    "versionsCount": 12,
     "versions": {
       "v1": {
         "createdDate": "2026-03-26T03:42:09.000Z",
@@ -1486323,10 +1487678,1001 @@
             }
           ]
         }
+      },
+      "v12": {
+        "createdDate": "2026-03-26T03:42:09.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AIOPSServiceWriteAccess",
+              "Effect": "Allow",
+              "Action": [
+                "cloudtrail:StartQuery",
+                "support:CreateCase"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AIOPSServiceAccess",
+              "Effect": "Allow",
+              "Action": [
+                "access-analyzer:GetAnalyzer",
+                "access-analyzer:List*",
+                "acm-pca:Describe*",
+                "acm-pca:GetCertificate",
+                "acm-pca:GetCertificateAuthorityCertificate",
+                "acm-pca:GetCertificateAuthorityCsr",
+                "acm-pca:List*",
+                "acm:DescribeCertificate",
+                "acm:GetAccountConfiguration",
+                "acm:GetCertificate",
+                "acm:ListCertificates",
+                "aidevops:GetAsset",
+                "aidevops:GetAssetContent",
+                "aidevops:GetAssetFile",
+                "aidevops:GetKnowledgeItem",
+                "aidevops:ListAssetFiles",
+                "aidevops:ListAssets",
+                "aidevops:ListAssetTypes",
+                "aidevops:ListAssetVersions",
+                "aidevops:ListKnowledgeItems",
+                "airflow:GetEnvironment",
+                "airflow:List*",
+                "amplify:GetApp",
+                "amplify:GetBranch",
+                "amplify:GetDomainAssociation",
+                "amplify:List*",
+                "aoss:BatchGetCollection",
+                "aoss:BatchGetLifecyclePolicy",
+                "aoss:BatchGetVpcEndpoint",
+                "aoss:GetAccessPolicy",
+                "aoss:GetSecurityConfig",
+                "aoss:GetSecurityPolicy",
+                "aoss:List*",
+                "appconfig:GetApplication",
+                "appconfig:GetConfigurationProfile",
+                "appconfig:GetEnvironment",
+                "appconfig:GetHostedConfigurationVersion",
+                "appconfig:List*",
+                "appflow:Describe*",
+                "appflow:List*",
+                "application-autoscaling:Describe*",
+                "application-signals:BatchGetServiceLevelObjectiveBudgetReport",
+                "application-signals:GetService",
+                "application-signals:GetServiceLevelObjective",
+                "application-signals:List*",
+                "applicationinsights:Describe*",
+                "applicationinsights:List*",
+                "apprunner:Describe*",
+                "apprunner:List*",
+                "appstream:Describe*",
+                "appstream:List*",
+                "appsync:GetApiAssociation",
+                "appsync:GetDataSource",
+                "appsync:GetDomainName",
+                "appsync:GetFunction",
+                "appsync:GetGraphqlApi",
+                "appsync:GetGraphqlApiEnvironmentVariables",
+                "appsync:GetIntrospectionSchema",
+                "appsync:GetResolver",
+                "appsync:GetSourceApiAssociation",
+                "appsync:List*",
+                "aps:Describe*",
+                "aps:List*",
+                "arc-zonal-shift:GetManagedResource",
+                "arc-zonal-shift:List*",
+                "athena:GetCapacityAssignmentConfiguration",
+                "athena:GetCapacityReservation",
+                "athena:GetDataCatalog",
+                "athena:GetNamedQuery",
+                "athena:GetPreparedStatement",
+                "athena:GetWorkGroup",
+                "athena:List*",
+                "auditmanager:GetAssessment",
+                "auditmanager:List*",
+                "autoscaling:Describe*",
+                "backup-gateway:GetHypervisor",
+                "backup-gateway:List*",
+                "backup:Describe*",
+                "backup:GetBackupPlan",
+                "backup:GetBackupSelection",
+                "backup:GetBackupVaultAccessPolicy",
+                "backup:GetBackupVaultNotifications",
+                "backup:GetRestoreTestingPlan",
+                "backup:GetRestoreTestingSelection",
+                "backup:List*",
+                "batch:DescribeComputeEnvironments",
+                "batch:DescribeJobQueues",
+                "batch:DescribeSchedulingPolicies",
+                "batch:List*",
+                "bcm-data-exports:Get*",
+                "bcm-data-exports:List*",
+                "bedrock:GetAgent",
+                "bedrock:GetAgentActionGroup",
+                "bedrock:GetAgentAlias",
+                "bedrock:GetAgentKnowledgeBase",
+                "bedrock:GetCustomModel",
+                "bedrock:GetDataSource",
+                "bedrock:GetFoundationModel",
+                "bedrock:GetGuardrail",
+                "bedrock:GetInferenceProfile",
+                "bedrock:GetKnowledgeBase",
+                "bedrock:GetModelInvocationLoggingConfiguration",
+                "bedrock:GetProvisionedModelThroughput",
+                "bedrock:List*",
+                "budgets:Describe*",
+                "budgets:List*",
+                "budgets:ViewBudget",
+                "ce:Describe*",
+                "ce:Get*",
+                "ce:List*",
+                "chatbot:Describe*",
+                "chatbot:GetMicrosoftTeamsChannelConfiguration",
+                "chatbot:List*",
+                "cleanrooms-ml:GetTrainingDataset",
+                "cleanrooms-ml:List*",
+                "cleanrooms:GetAnalysisTemplate",
+                "cleanrooms:GetCollaboration",
+                "cleanrooms:GetConfiguredTable",
+                "cleanrooms:GetConfiguredTableAnalysisRule",
+                "cleanrooms:GetConfiguredTableAssociation",
+                "cleanrooms:GetMembership",
+                "cleanrooms:List*",
+                "cloudformation:Describe*",
+                "cloudformation:GetResource",
+                "cloudformation:GetStackPolicy",
+                "cloudformation:GetTemplate",
+                "cloudformation:List*",
+                "cloudfront:Describe*",
+                "cloudfront:GetCachePolicy",
+                "cloudfront:GetCloudFrontOriginAccessIdentity",
+                "cloudfront:GetContinuousDeploymentPolicy",
+                "cloudfront:GetDistribution",
+                "cloudfront:GetDistributionConfig",
+                "cloudfront:GetFunction",
+                "cloudfront:GetKeyGroup",
+                "cloudfront:GetMonitoringSubscription",
+                "cloudfront:GetOriginAccessControl",
+                "cloudfront:GetOriginRequestPolicy",
+                "cloudfront:GetPublicKey",
+                "cloudfront:GetRealtimeLogConfig",
+                "cloudfront:GetResponseHeadersPolicy",
+                "cloudfront:List*",
+                "cloudtrail:Describe*",
+                "cloudtrail:GetChannel",
+                "cloudtrail:GetEventConfiguration",
+                "cloudtrail:GetEventDataStore",
+                "cloudtrail:GetEventSelectors",
+                "cloudtrail:GetInsightSelectors",
+                "cloudtrail:GetQueryResults",
+                "cloudtrail:GetResourcePolicy",
+                "cloudtrail:GetTrail",
+                "cloudtrail:GetTrailStatus",
+                "cloudtrail:List*",
+                "cloudtrail:LookupEvents",
+                "cloudwatch:Describe*",
+                "cloudwatch:GenerateQuery",
+                "cloudwatch:GetDashboard",
+                "cloudwatch:GetInsightRuleReport",
+                "cloudwatch:GetMetricData",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:GetMetricStream",
+                "cloudwatch:GetOTelEnrichment",
+                "cloudwatch:GetService",
+                "cloudwatch:GetServiceLevelObjective",
+                "cloudwatch:List*",
+                "codeartifact:Describe*",
+                "codeartifact:GetDomainPermissionsPolicy",
+                "codeartifact:GetRepositoryPermissionsPolicy",
+                "codeartifact:List*",
+                "codebuild:BatchGetFleets",
+                "codebuild:List*",
+                "codecommit:BatchDescribe*",
+                "codecommit:BatchGet*",
+                "codecommit:Describe*",
+                "codecommit:EvaluatePullRequestApprovalRules",
+                "codecommit:GetApprovalRuleTemplate",
+                "codecommit:GetBranch",
+                "codecommit:GetComment",
+                "codecommit:GetCommentReactions",
+                "codecommit:GetCommentsForComparedCommit",
+                "codecommit:GetCommentsForPullRequest",
+                "codecommit:GetCommit",
+                "codecommit:GetCommitHistory",
+                "codecommit:GetCommitsFromMergeBase",
+                "codecommit:GetDifferences",
+                "codecommit:GetMergeCommit",
+                "codecommit:GetMergeConflicts",
+                "codecommit:GetMergeOptions",
+                "codecommit:GetObjectIdentifier",
+                "codecommit:GetPullRequest",
+                "codecommit:GetPullRequestApprovalStates",
+                "codecommit:GetPullRequestOverrideState",
+                "codecommit:GetReferences",
+                "codecommit:GetRepository",
+                "codecommit:GetRepositoryTriggers",
+                "codecommit:GetTree",
+                "codecommit:GetUploadArchiveStatus",
+                "codecommit:List*",
+                "codedeploy:BatchGetDeployments",
+                "codedeploy:BatchGetDeploymentTargets",
+                "codedeploy:GetApplication",
+                "codedeploy:GetDeploymentConfig",
+                "codedeploy:GetDeploymentTarget",
+                "codedeploy:List*",
+                "codeguru-profiler:Describe*",
+                "codeguru-profiler:GetNotificationConfiguration",
+                "codeguru-profiler:GetPolicy",
+                "codeguru-profiler:List*",
+                "codeguru-reviewer:Describe*",
+                "codeguru-reviewer:List*",
+                "codepipeline:GetPipeline",
+                "codepipeline:GetPipelineState",
+                "codepipeline:List*",
+                "codestar-connections:GetConnection",
+                "codestar-connections:GetRepositoryLink",
+                "codestar-connections:GetSyncConfiguration",
+                "codestar-connections:List*",
+                "codestar-notifications:Describe*",
+                "codestar-notifications:List*",
+                "cognito-identity:DescribeIdentityPool",
+                "cognito-identity:GetIdentityPoolRoles",
+                "cognito-identity:ListIdentityPools",
+                "cognito-identity:ListTagsForResource",
+                "cognito-idp:AdminListGroupsForUser",
+                "cognito-idp:DescribeIdentityProvider",
+                "cognito-idp:DescribeResourceServer",
+                "cognito-idp:DescribeRiskConfiguration",
+                "cognito-idp:DescribeUserImportJob",
+                "cognito-idp:DescribeUserPool",
+                "cognito-idp:DescribeUserPoolDomain",
+                "cognito-idp:GetGroup",
+                "cognito-idp:GetLogDeliveryConfiguration",
+                "cognito-idp:GetUICustomization",
+                "cognito-idp:GetUserPoolMfaConfig",
+                "cognito-idp:GetWebACLForResource",
+                "cognito-idp:ListGroups",
+                "cognito-idp:ListIdentityProviders",
+                "cognito-idp:ListResourceServers",
+                "cognito-idp:ListUserPoolClients",
+                "cognito-idp:ListUserPools",
+                "cognito-idp:ListTagsForResource",
+                "comprehend:Describe*",
+                "comprehend:List*",
+                "config:Describe*",
+                "config:GetAggregateResourceConfig",
+                "config:GetStoredQuery",
+                "config:List*",
+                "config:SelectAggregateResourceConfig",
+                "connect:Describe*",
+                "connect:GetMetricDataV2",
+                "connect:GetTaskTemplate",
+                "connect:List*",
+                "cur:Describe*",
+                "cur:Get*",
+                "databrew:Describe*",
+                "databrew:List*",
+                "datapipeline:Describe*",
+                "datapipeline:GetPipelineDefinition",
+                "datapipeline:List*",
+                "datasync:Describe*",
+                "datasync:List*",
+                "deadline:GetFarm",
+                "deadline:GetFleet",
+                "deadline:GetLicenseEndpoint",
+                "deadline:GetMonitor",
+                "deadline:GetQueue",
+                "deadline:GetQueueEnvironment",
+                "deadline:GetQueueFleetAssociation",
+                "deadline:GetStorageProfile",
+                "deadline:List*",
+                "detective:GetMembers",
+                "detective:List*",
+                "devicefarm:GetDevicePool",
+                "devicefarm:GetInstanceProfile",
+                "devicefarm:GetNetworkProfile",
+                "devicefarm:GetProject",
+                "devicefarm:GetTestGridProject",
+                "devicefarm:GetVPCEConfiguration",
+                "devicefarm:List*",
+                "devops-guru:Describe*",
+                "devops-guru:GetResourceCollection",
+                "devops-guru:List*",
+                "directconnect:DescribeConnections",
+                "directconnect:DescribeDirectConnectGatewayAssociations",
+                "directconnect:DescribeDirectConnectGatewayAttachments",
+                "directconnect:DescribeDirectConnectGateways",
+                "directconnect:DescribeHostedConnections",
+                "directconnect:DescribeInterconnects",
+                "directconnect:DescribeLags",
+                "directconnect:DescribeTags",
+                "directconnect:DescribeVirtualInterfaces",
+                "dms:Describe*",
+                "dms:List*",
+                "ds:Describe*",
+                "dynamodb:Describe*",
+                "dynamodb:GetResourcePolicy",
+                "dynamodb:List*",
+                "ec2:Describe*",
+                "ec2:GetAssociatedEnclaveCertificateIamRoles",
+                "ec2:GetCapacityManagerAttributes",
+                "ec2:GetCapacityManagerMetricData",
+                "ec2:GetCapacityManagerMonitoredTagKeys",
+                "ec2:GetIpamPoolAllocations",
+                "ec2:GetIpamPoolCidrs",
+                "ec2:GetManagedPrefixListEntries",
+                "ec2:GetNetworkInsightsAccessScopeContent",
+                "ec2:GetSnapshotBlockPublicAccessState",
+                "ec2:GetTransitGatewayMulticastDomainAssociations",
+                "ec2:GetTransitGatewayRouteTableAssociations",
+                "ec2:GetTransitGatewayRouteTablePropagations",
+                "ec2:GetVerifiedAccessEndpointPolicy",
+                "ec2:GetVerifiedAccessGroupPolicy",
+                "ec2:GetVerifiedAccessInstanceWebAcl",
+                "ec2:SearchLocalGatewayRoutes",
+                "ec2:SearchTransitGatewayRoutes",
+                "ecr:Describe*",
+                "ecr:GetLifecyclePolicy",
+                "ecr:GetRegistryPolicy",
+                "ecr:GetRepositoryPolicy",
+                "ecr:List*",
+                "ecs:Describe*",
+                "ecs:List*",
+                "eks:AccessKubernetesApi",
+                "eks:Describe*",
+                "eks:List*",
+                "elasticache:Describe*",
+                "elasticache:List*",
+                "elasticbeanstalk:Describe*",
+                "elasticbeanstalk:List*",
+                "elasticfilesystem:Describe*",
+                "elasticloadbalancing:GetResourcePolicy",
+                "elasticloadbalancing:GetTrustStoreCaCertificatesBundle",
+                "elasticloadbalancing:GetTrustStoreRevocationContent",
+                "elasticloadbalancing:Describe*",
+                "elasticmapreduce:Describe*",
+                "elasticmapreduce:List*",
+                "emr-containers:Describe*",
+                "emr-containers:List*",
+                "emr-serverless:GetApplication",
+                "emr-serverless:List*",
+                "es:Describe*",
+                "es:List*",
+                "events:Describe*",
+                "events:List*",
+                "evidently:GetExperiment",
+                "evidently:GetFeature",
+                "evidently:GetLaunch",
+                "evidently:GetProject",
+                "evidently:GetSegment",
+                "evidently:List*",
+                "firehose:Describe*",
+                "firehose:List*",
+                "fis:GetExperimentTemplate",
+                "fis:GetTargetAccountConfiguration",
+                "fis:List*",
+                "fms:GetNotificationChannel",
+                "fms:GetPolicy",
+                "fms:List*",
+                "forecast:Describe*",
+                "forecast:List*",
+                "frauddetector:BatchGetVariable",
+                "frauddetector:Describe*",
+                "frauddetector:GetDetectors",
+                "frauddetector:GetDetectorVersion",
+                "frauddetector:GetEntityTypes",
+                "frauddetector:GetEventTypes",
+                "frauddetector:GetExternalModels",
+                "frauddetector:GetLabels",
+                "frauddetector:GetListElements",
+                "frauddetector:GetListsMetadata",
+                "frauddetector:GetModelVersion",
+                "frauddetector:GetOutcomes",
+                "frauddetector:GetRules",
+                "frauddetector:GetVariables",
+                "frauddetector:List*",
+                "fsx:Describe*",
+                "gamelift:Describe*",
+                "gamelift:List*",
+                "globalaccelerator:Describe*",
+                "globalaccelerator:List*",
+                "glue:BatchGetJobs",
+                "glue:GetClassifier",
+                "glue:GetClassifiers",
+                "glue:GetCrawler",
+                "glue:GetCrawlerMetrics",
+                "glue:GetCrawlers",
+                "glue:GetDatabase",
+                "glue:GetDatabases",
+                "glue:GetDataCatalogEncryptionSettings",
+                "glue:GetDataQualityResult",
+                "glue:GetJob",
+                "glue:GetJobBookmark",
+                "glue:GetJobRun",
+                "glue:GetJobRuns",
+                "glue:getPartition",
+                "glue:GetPartitions",
+                "glue:GetRegistry",
+                "glue:GetResourcePolicy",
+                "glue:GetSchema",
+                "glue:GetSchemaVersion",
+                "glue:GetTable",
+                "glue:GetTables",
+                "glue:GetTags",
+                "glue:GetTrigger",
+                "glue:GetSecurityConfiguration",
+                "glue:GetSecurityConfigurations",
+                "glue:GetWorkflow",
+                "glue:GetWorkflowRun",
+                "glue:List*",
+                "glue:querySchemaVersionMetadata",
+                "grafana:Describe*",
+                "grafana:List*",
+                "greengrass:Describe*",
+                "greengrass:GetDeployment",
+                "greengrass:List*",
+                "groundstation:GetConfig",
+                "groundstation:GetDataflowEndpointGroup",
+                "groundstation:GetMissionProfile",
+                "groundstation:List*",
+                "guardduty:GetDetector",
+                "guardduty:GetFilter",
+                "guardduty:GetFindings",
+                "guardduty:GetIPSet",
+                "guardduty:GetMalwareProtectionPlan",
+                "guardduty:GetMasterAccount",
+                "guardduty:GetMembers",
+                "guardduty:GetThreatIntelSet",
+                "guardduty:List*",
+                "health:Describe*",
+                "healthlake:Describe*",
+                "healthlake:List*",
+                "iam:GetGroup",
+                "iam:GetGroupPolicy",
+                "iam:GetInstanceProfile",
+                "iam:GetLoginProfile",
+                "iam:GetOpenIDConnectProvider",
+                "iam:GetPolicy",
+                "iam:GetPolicyVersion",
+                "iam:GetRole",
+                "iam:GetRolePolicy",
+                "iam:GetSAMLProvider",
+                "iam:GetServerCertificate",
+                "iam:GetServiceLinkedRoleDeletionStatus",
+                "iam:GetUser",
+                "iam:GetUserPolicy",
+                "iam:ListAccountAliases",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListEntitiesForPolicy",
+                "iam:ListOpenIDConnectProviders",
+                "iam:ListRolePolicies",
+                "iam:ListRoles",
+                "iam:ListServerCertificates",
+                "iam:ListUsers",
+                "iam:ListVirtualMFADevices",
+                "identitystore:DescribeGroup",
+                "identitystore:DescribeGroupMembership",
+                "identitystore:ListGroupMemberships",
+                "identitystore:ListGroups",
+                "imagebuilder:GetComponent",
+                "imagebuilder:GetContainerRecipe",
+                "imagebuilder:GetDistributionConfiguration",
+                "imagebuilder:GetImage",
+                "imagebuilder:GetImagePipeline",
+                "imagebuilder:GetImageRecipe",
+                "imagebuilder:GetInfrastructureConfiguration",
+                "imagebuilder:GetLifecyclePolicy",
+                "imagebuilder:GetWorkflow",
+                "imagebuilder:List*",
+                "inspector2:List*",
+                "inspector2:SearchVulnerabilities",
+                "inspector:Describe*",
+                "inspector:List*",
+                "internetmonitor:GetMonitor",
+                "internetmonitor:List*",
+                "iot:Describe*",
+                "iot:GetPackage",
+                "iot:GetPackageVersion",
+                "iot:GetPolicy",
+                "iot:GetThingShadow",
+                "iot:GetTopicRule",
+                "iot:GetTopicRuleDestination",
+                "iot:GetV2LoggingOptions",
+                "iot:List*",
+                "iotanalytics:Describe*",
+                "iotanalytics:List*",
+                "iotevents:Describe*",
+                "iotevents:List*",
+                "iotsitewise:Describe*",
+                "iotsitewise:List*",
+                "iotwireless:GetDestination",
+                "iotwireless:GetDeviceProfile",
+                "iotwireless:GetFuotaTask",
+                "iotwireless:GetMulticastGroup",
+                "iotwireless:GetNetworkAnalyzerConfiguration",
+                "iotwireless:GetServiceProfile",
+                "iotwireless:GetWirelessDevice",
+                "iotwireless:GetWirelessGateway",
+                "iotwireless:GetWirelessGatewayTaskDefinition",
+                "iotwireless:List*",
+                "ivs:GetChannel",
+                "ivs:GetEncoderConfiguration",
+                "ivs:GetPlaybackRestrictionPolicy",
+                "ivs:GetRecordingConfiguration",
+                "ivs:GetStage",
+                "ivs:List*",
+                "ivschat:GetLoggingConfiguration",
+                "ivschat:GetRoom",
+                "ivschat:List*",
+                "kafka:Describe*",
+                "kafka:GetClusterPolicy",
+                "kafka:List*",
+                "kafkaconnect:Describe*",
+                "kafkaconnect:List*",
+                "kendra:Describe*",
+                "kendra:List*",
+                "kinesis:Describe*",
+                "kinesis:GetResourcePolicy",
+                "kinesis:List*",
+                "kinesisanalytics:Describe*",
+                "kinesisanalytics:List*",
+                "kinesisvideo:Describe*",
+                "kms:DescribeCustomKeyStores",
+                "kms:DescribeKey",
+                "kms:GetKeyPolicy",
+                "kms:GetKeyRotationStatus",
+                "kms:GetParametersForImport",
+                "kms:GetPublicKey",
+                "kms:ListAliases",
+                "kms:ListGrants",
+                "kms:ListKeyPolicies",
+                "kms:ListKeyRotations",
+                "kms:ListKeys",
+                "kms:ListResourceTags",
+                "kms:ListRetirableGrants",
+                "lakeformation:Describe*",
+                "lakeformation:GetLFTag",
+                "lakeformation:GetResourceLFTags",
+                "lakeformation:List*",
+                "lambda:GetAlias",
+                "lambda:GetCodeSigningConfig",
+                "lambda:GetEventSourceMapping",
+                "lambda:GetFunctionCodeSigningConfig",
+                "lambda:GetFunctionConfiguration",
+                "lambda:GetFunctionEventInvokeConfig",
+                "lambda:GetFunctionRecursionConfig",
+                "lambda:GetFunctionUrlConfig",
+                "lambda:GetLayerVersion",
+                "lambda:GetLayerVersionPolicy",
+                "lambda:GetPolicy",
+                "lambda:GetProvisionedConcurrencyConfig",
+                "lambda:GetRuntimeManagementConfig",
+                "lambda:List*",
+                "launchwizard:GetDeployment",
+                "launchwizard:List*",
+                "license-manager:GetLicense",
+                "license-manager:List*",
+                "lightsail:GetAlarms",
+                "lightsail:GetBuckets",
+                "lightsail:GetCertificates",
+                "lightsail:GetContainerServices",
+                "lightsail:GetDisk",
+                "lightsail:GetDisks",
+                "lightsail:GetInstance",
+                "lightsail:GetInstances",
+                "lightsail:GetLoadBalancer",
+                "lightsail:GetLoadBalancers",
+                "lightsail:GetLoadBalancerTlsCertificates",
+                "lightsail:GetStaticIp",
+                "lightsail:GetStaticIps",
+                "logs:Describe*",
+                "logs:FilterLogEvents",
+                "logs:GetDataProtectionPolicy",
+                "logs:GetDelivery",
+                "logs:GetDeliveryDestination",
+                "logs:GetDeliveryDestinationPolicy",
+                "logs:GetDeliverySource",
+                "logs:GetLogAnomalyDetector",
+                "logs:GetLogDelivery",
+                "logs:GetLogEvents",
+                "logs:GetLogGroupFields",
+                "logs:GetQueryResults",
+                "logs:List*",
+                "logs:StartQuery",
+                "logs:StopLiveTail",
+                "logs:StopQuery",
+                "logs:TestMetricFilter",
+                "m2:GetApplication",
+                "m2:GetEnvironment",
+                "m2:List*",
+                "macie2:GetAllowList",
+                "macie2:GetCustomDataIdentifier",
+                "macie2:GetFindingsFilter",
+                "macie2:GetMacieSession",
+                "macie2:List*",
+                "mediaconnect:Describe*",
+                "mediaconnect:List*",
+                "medialive:Describe*",
+                "medialive:GetCloudWatchAlarmTemplate",
+                "medialive:GetCloudWatchAlarmTemplateGroup",
+                "medialive:GetEventBridgeRuleTemplate",
+                "medialive:GetEventBridgeRuleTemplateGroup",
+                "medialive:GetSignalMap",
+                "medialive:List*",
+                "mediapackage-vod:Describe*",
+                "mediapackage-vod:List*",
+                "mediapackage:Describe*",
+                "mediapackage:List*",
+                "mediapackagev2:GetChannel",
+                "mediapackagev2:GetChannelGroup",
+                "mediapackagev2:GetChannelPolicy",
+                "mediapackagev2:GetOriginEndpoint",
+                "mediapackagev2:GetOriginEndpointPolicy",
+                "mediapackagev2:List*",
+                "memorydb:Describe*",
+                "memorydb:List*",
+                "mobiletargeting:GetInAppTemplate",
+                "mobiletargeting:List*",
+                "mq:Describe*",
+                "mq:List*",
+                "network-firewall:Describe*",
+                "network-firewall:List*",
+                "networkmanager:Describe*",
+                "networkmanager:GetConnectAttachment",
+                "networkmanager:GetConnectPeer",
+                "networkmanager:GetCoreNetwork",
+                "networkmanager:GetCoreNetworkPolicy",
+                "networkmanager:GetCustomerGatewayAssociations",
+                "networkmanager:GetDevices",
+                "networkmanager:GetLinkAssociations",
+                "networkmanager:GetLinks",
+                "networkmanager:GetSites",
+                "networkmanager:GetSiteToSiteVpnAttachment",
+                "networkmanager:GetTransitGatewayPeering",
+                "networkmanager:GetTransitGatewayRegistrations",
+                "networkmanager:GetTransitGatewayRouteTableAttachment",
+                "networkmanager:GetVpcAttachment",
+                "networkmanager:List*",
+                "oam:GetLink",
+                "oam:GetSink",
+                "oam:GetSinkPolicy",
+                "oam:List*",
+                "omics:GetAnnotationStore",
+                "omics:GetReferenceStore",
+                "omics:GetRunGroup",
+                "omics:GetSequenceStore",
+                "omics:GetVariantStore",
+                "omics:GetWorkflow",
+                "omics:List*",
+                "organizations:Describe*",
+                "organizations:List*",
+                "osis:GetPipeline",
+                "osis:List*",
+                "payment-cryptography:GetAlias",
+                "payment-cryptography:GetKey",
+                "payment-cryptography:List*",
+                "pca-connector-ad:GetConnector",
+                "pca-connector-ad:GetDirectoryRegistration",
+                "pca-connector-ad:GetServicePrincipalName",
+                "pca-connector-ad:GetTemplate",
+                "pca-connector-ad:GetTemplateGroupAccessControlEntry",
+                "pca-connector-ad:List*",
+                "pca-connector-scep:GetChallengeMetadata",
+                "pca-connector-scep:GetConnector",
+                "pca-connector-scep:List*",
+                "personalize:Describe*",
+                "personalize:List*",
+                "pi:Describe*",
+                "pi:Get*",
+                "pi:List*",
+                "pipes:Describe*",
+                "pipes:List*",
+                "proton:GetEnvironmentTemplate",
+                "proton:GetServiceTemplate",
+                "proton:List*",
+                "qbusiness:GetApplication",
+                "qbusiness:GetDataSource",
+                "qbusiness:GetIndex",
+                "qbusiness:GetPlugin",
+                "qbusiness:GetRetriever",
+                "qbusiness:GetWebExperience",
+                "qbusiness:List*",
+                "ram:GetPermission",
+                "ram:GetResourceShares",
+                "ram:List*",
+                "rds:Describe*",
+                "rds:List*",
+                "redshift-serverless:GetNamespace",
+                "redshift-serverless:GetWorkgroup",
+                "redshift-serverless:List*",
+                "redshift:Describe*",
+                "refactor-spaces:GetApplication",
+                "refactor-spaces:GetEnvironment",
+                "refactor-spaces:GetRoute",
+                "refactor-spaces:List*",
+                "rekognition:Describe*",
+                "rekognition:List*",
+                "resiliencehub:Describe*",
+                "resiliencehub:Get*",
+                "resiliencehub:List*",
+                "resource-explorer-2:GetDefaultView",
+                "resource-explorer-2:GetIndex",
+                "resource-explorer-2:GetView",
+                "resource-explorer-2:List*",
+                "resource-explorer-2:Search",
+                "resource-groups:GetGroup",
+                "resource-groups:GetGroupConfiguration",
+                "resource-groups:GetGroupQuery",
+                "resource-groups:GetTags",
+                "resource-groups:List*",
+                "route53-recovery-control-config:Describe*",
+                "route53-recovery-control-config:List*",
+                "route53-recovery-readiness:GetCell",
+                "route53-recovery-readiness:GetReadinessCheck",
+                "route53-recovery-readiness:GetRecoveryGroup",
+                "route53-recovery-readiness:GetResourceSet",
+                "route53-recovery-readiness:List*",
+                "route53:GetDNSSEC",
+                "route53:GetHealthCheck",
+                "route53:GetHealthCheckStatus",
+                "route53:GetHostedZone",
+                "route53:List*",
+                "route53profiles:GetProfile",
+                "route53profiles:GetProfileAssociation",
+                "route53profiles:GetProfileResourceAssociation",
+                "route53profiles:List*",
+                "route53resolver:GetFirewallDomainList",
+                "route53resolver:GetFirewallRuleGroup",
+                "route53resolver:GetFirewallRuleGroupAssociation",
+                "route53resolver:GetOutpostResolver",
+                "route53resolver:GetResolverConfig",
+                "route53resolver:GetResolverQueryLogConfig",
+                "route53resolver:GetResolverQueryLogConfigAssociation",
+                "route53resolver:GetResolverRule",
+                "route53resolver:GetResolverRuleAssociation",
+                "route53resolver:List*",
+                "rum:GetAppMonitor",
+                "rum:List*",
+                "s3-outposts:ListEndpoints",
+                "s3-outposts:ListOutpostsWithS3",
+                "s3:GetAccelerateConfiguration",
+                "s3:GetAccessGrant",
+                "s3:GetAccessGrantsInstance",
+                "s3:GetAccessGrantsLocation",
+                "s3:GetAccessPoint",
+                "s3:GetAccessPointConfigurationForObjectLambda",
+                "s3:GetAccessPointForObjectLambda",
+                "s3:GetAccessPointPolicy",
+                "s3:GetAccessPointPolicyForObjectLambda",
+                "s3:GetAccessPointPolicyStatusForObjectLambda",
+                "s3:GetAnalyticsConfiguration",
+                "s3:GetBucketAbac",
+                "s3:GetBucketAcl",
+                "s3:GetBucketCORS",
+                "s3:GetBucketLocation",
+                "s3:GetBucketLogging",
+                "s3:GetBucketMetadataTableConfiguration",
+                "s3:GetBucketNotification",
+                "s3:GetBucketObjectLockConfiguration",
+                "s3:GetBucketOwnershipControls",
+                "s3:GetBucketPolicy",
+                "s3:GetBucketPublicAccessBlock",
+                "s3:GetBucketTagging",
+                "s3:GetBucketVersioning",
+                "s3:GetBucketWebsite",
+                "s3:GetEncryptionConfiguration",
+                "s3:GetIntelligentTieringConfiguration",
+                "s3:GetInventoryConfiguration",
+                "s3:GetLifecycleConfiguration",
+                "s3:GetMetricsConfiguration",
+                "s3:GetMultiRegionAccessPoint",
+                "s3:GetMultiRegionAccessPointPolicy",
+                "s3:GetMultiRegionAccessPointPolicyStatus",
+                "s3:GetReplicationConfiguration",
+                "s3:GetStorageLensConfiguration",
+                "s3:GetStorageLensConfigurationTagging",
+                "s3:GetStorageLensGroup",
+                "s3:ListAllMyBuckets",
+                "s3:ListTagsForResource",
+                "sagemaker:Describe*",
+                "sagemaker:List*",
+                "scheduler:GetSchedule",
+                "scheduler:GetScheduleGroup",
+                "scheduler:List*",
+                "schemas:Describe*",
+                "schemas:GetResourcePolicy",
+                "schemas:List*",
+                "secretsmanager:Describe*",
+                "secretsmanager:GetResourcePolicy",
+                "secretsmanager:List*",
+                "securityhub:BatchGetAutomationRules",
+                "securityhub:BatchGetSecurityControls",
+                "securityhub:Describe*",
+                "securityhub:GetConfigurationPolicy",
+                "securityhub:GetConfigurationPolicyAssociation",
+                "securityhub:GetEnabledStandards",
+                "securityhub:GetFindingAggregator",
+                "securityhub:GetFindings",
+                "securityhub:GetInsights",
+                "securityhub:List*",
+                "securitylake:GetSubscriber",
+                "securitylake:List*",
+                "servicecatalog:Describe*",
+                "servicecatalog:GetApplication",
+                "servicecatalog:GetAttributeGroup",
+                "servicecatalog:List*",
+                "servicequotas:Get*",
+                "servicequotas:List*",
+                "ses:Describe*",
+                "ses:GetAccount",
+                "ses:GetAddonInstance",
+                "ses:GetAddonSubscription",
+                "ses:GetArchive",
+                "ses:GetConfigurationSet",
+                "ses:GetConfigurationSetEventDestinations",
+                "ses:GetContactList",
+                "ses:GetDedicatedIpPool",
+                "ses:GetDedicatedIps",
+                "ses:GetEmailIdentity",
+                "ses:GetEmailTemplate",
+                "ses:GetIngressPoint",
+                "ses:GetRelay",
+                "ses:GetRuleSet",
+                "ses:GetTemplate",
+                "ses:GetTrafficPolicy",
+                "ses:List*",
+                "shield:Describe*",
+                "shield:List*",
+                "signer:GetSigningProfile",
+                "signer:List*",
+                "sns:GetDataProtectionPolicy",
+                "sns:GetSubscriptionAttributes",
+                "sns:GetTopicAttributes",
+                "sns:List*",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+                "sqs:List*",
+                "ssm-contacts:GetContact",
+                "ssm-contacts:GetContactChannel",
+                "ssm-contacts:List*",
+                "ssm-incidents:GetReplicationSet",
+                "ssm-incidents:GetResponsePlan",
+                "ssm-incidents:List*",
+                "ssm-sap:GetApplication",
+                "ssm-sap:List*",
+                "ssm:Describe*",
+                "ssm:GetCommandInvocation",
+                "ssm:GetDefaultPatchBaseline",
+                "ssm:GetDocument",
+                "ssm:GetPatchBaseline",
+                "ssm:GetResourcePolicies",
+                "ssm:List*",
+                "sso:DescribeAccountAssignmentCreationStatus",
+                "sso:DescribePermissionSet",
+                "sso:GetInlinePolicyForPermissionSet",
+                "sso:GetManagedApplicationInstance",
+                "sso:GetPermissionsBoundaryForPermissionSet",
+                "sso:GetSharedSsoConfiguration",
+                "sso:ListAccountAssignments",
+                "sso:ListApplicationAssignments",
+                "sso:ListApplications",
+                "sso:ListCustomerManagedPolicyReferencesInPermissionSet",
+                "sso:ListInstances",
+                "sso:ListManagedPoliciesInPermissionSet",
+                "sso:ListPermissionSets",
+                "sso:ListTagsForResource",
+                "states:GetExecutionHistory",
+                "states:Describe*",
+                "states:List*",
+                "support:DescribeCases",
+                "synthetics:Describe*",
+                "synthetics:GetCanary",
+                "synthetics:GetCanaryRuns",
+                "synthetics:GetGroup",
+                "synthetics:List*",
+                "tag:GetResources",
+                "timestream:Describe*",
+                "timestream:List*",
+                "transfer:Describe*",
+                "transfer:List*",
+                "verifiedpermissions:GetIdentitySource",
+                "verifiedpermissions:GetPolicy",
+                "verifiedpermissions:GetPolicyStore",
+                "verifiedpermissions:GetPolicyTemplate",
+                "verifiedpermissions:GetSchema",
+                "verifiedpermissions:List*",
+                "vpc-lattice:GetAccessLogSubscription",
+                "vpc-lattice:GetAuthPolicy",
+                "vpc-lattice:GetListener",
+                "vpc-lattice:GetResourcePolicy",
+                "vpc-lattice:GetRule",
+                "vpc-lattice:GetService",
+                "vpc-lattice:GetServiceNetwork",
+                "vpc-lattice:GetServiceNetworkServiceAssociation",
+                "vpc-lattice:GetServiceNetworkVpcAssociation",
+                "vpc-lattice:GetTargetGroup",
+                "vpc-lattice:List*",
+                "wafv2:GetIPSet",
+                "wafv2:GetLoggingConfiguration",
+                "wafv2:GetRegexPatternSet",
+                "wafv2:GetRuleGroup",
+                "wafv2:GetSampledRequests",
+                "wafv2:GetWebACL",
+                "wafv2:GetWebACLForResource",
+                "wafv2:List*",
+                "wisdom:Get*",
+                "wisdom:List*",
+                "wisdom:Query*",
+                "wisdom:Retrieve",
+                "wisdom:Search*",
+                "workspaces-web:GetBrowserSettings",
+                "workspaces-web:GetIdentityProvider",
+                "workspaces-web:GetNetworkSettings",
+                "workspaces-web:GetPortal",
+                "workspaces-web:GetPortalServiceProviderMetadata",
+                "workspaces-web:GetTrustStore",
+                "workspaces-web:GetUserAccessLoggingSettings",
+                "workspaces-web:GetUserSettings",
+                "workspaces-web:List*",
+                "workspaces:Describe*",
+                "xray:BatchGetTraces",
+                "xray:GetGroup",
+                "xray:GetGroups",
+                "xray:GetSamplingRules",
+                "xray:GetServiceGraph",
+                "xray:GetTraceSummaries",
+                "xray:List*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AIOPSAPIGatewayAccess",
+              "Effect": "Allow",
+              "Action": [
+                "apigateway:GET"
+              ],
+              "Resource": [
+                "arn:aws:apigateway:*::/restapis",
+                "arn:aws:apigateway:*::/restapis/*",
+                "arn:aws:apigateway:*::/restapis/*/deployments",
+                "arn:aws:apigateway:*::/restapis/*/deployments/*",
+                "arn:aws:apigateway:*::/restapis/*/resources/*/methods/*/integrations",
+                "arn:aws:apigateway:*::/restapis/*/resources/*/methods/*/integrations/*",
+                "arn:aws:apigateway:*::/restapis/*/stages",
+                "arn:aws:apigateway:*::/restapis/*/stages/*",
+                "arn:aws:apigateway:*::/apis",
+                "arn:aws:apigateway:*::/apis/*",
+                "arn:aws:apigateway:*::/apis/*/deployments",
+                "arn:aws:apigateway:*::/apis/*/deployments/*",
+                "arn:aws:apigateway:*::/apis/*/integrations",
+                "arn:aws:apigateway:*::/apis/*/integrations/*",
+                "arn:aws:apigateway:*::/apis/*/stages",
+                "arn:aws:apigateway:*::/apis/*/stages/*",
+                "arn:aws:apigateway:*::/domainnames",
+                "arn:aws:apigateway:*::/domainnames/*"
+              ]
+            },
+            {
+              "Sid": "AllowListBucketAWSLogs",
+              "Effect": "Allow",
+              "Action": "s3:ListBucket",
+              "Resource": "arn:aws:s3:::*",
+              "Condition": {
+                "StringLike": {
+                  "s3:prefix": [
+                    "AWSLogs/*",
+                    "*/AWSLogs/*"
+                  ]
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-03-26T03:42:09.000Z",
-    "lastUpdatedDate": "2026-09-24T20:57:09.000Z"
+    "lastUpdatedDate": "2026-10-27T18:07:08.000Z"
   },
   "AIDevOpsOperatorAppAccessPolicy": {
     "arn": "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy",
@@ -1494359,8 +1496705,8 @@
   },
   "EC2ImageBuilderExecutionPolicy": {
     "arn": "arn:aws:iam::aws:policy/EC2ImageBuilderExecutionPolicy",
-    "latestVersionId": "v2",
-    "versionsCount": 2,
+    "latestVersionId": "v3",
+    "versionsCount": 3,
     "versions": {
       "v1": {
         "createdDate": "2026-06-04T17:12:14.000Z",
@@ -1495684,10 +1498030,694 @@
             }
           ]
         }
+      },
+      "v3": {
+        "createdDate": "2026-06-04T17:12:14.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "RunInstancesPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:RunInstances"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*",
+                "arn:aws:ec2:*::snapshot/*",
+                "arn:aws:ec2:*:*:key-pair/*",
+                "arn:aws:ec2:*:*:launch-template/*",
+                "arn:aws:ec2:*:*:network-interface/*",
+                "arn:aws:ec2:*:*:security-group/*",
+                "arn:aws:ec2:*:*:subnet/*",
+                "arn:aws:license-manager:*:*:license-configuration:*"
+              ]
+            },
+            {
+              "Sid": "RunInstancesWithEC2ImageBuilderRequestTagsPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:RunInstances"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:instance/*",
+                "arn:aws:ec2:*:*:volume/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": [
+                    "EC2 Image Builder",
+                    "EC2 Fast Launch"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "IAMPassRolePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "iam:PassRole"
+              ],
+              "Resource": [
+                "arn:aws:iam::*:role/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": [
+                    "ec2.amazonaws.com",
+                    "ec2.amazonaws.com.cn",
+                    "vmie.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "EC2InstanceStateChangePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:StartInstances",
+                "ec2:StopInstances",
+                "ec2:TerminateInstances"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "EC2ReadOnlyPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeExportImageTasks",
+                "ec2:DescribeHosts",
+                "ec2:DescribeImages",
+                "ec2:DescribeImportImageTasks",
+                "ec2:DescribeInstanceAttribute",
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceStatus",
+                "ec2:DescribeInstanceTypes",
+                "ec2:DescribeInstanceTypeOfferings",
+                "ec2:DescribeSnapshots",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeTags"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "EC2CopyPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CopyImage"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "EC2CreateImagePermissionsForImage",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateImage"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*",
+                "arn:aws:ec2:*::snapshot/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "EC2CreateImagePermissionsForInstance",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateImage"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:instance/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "EC2DeregisterImagePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DeregisterImage"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "EC2RegisterImagePermissionsForImage",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:RegisterImage"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "EC2RegisterImagePermissionsForSnapshot",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:RegisterImage"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::snapshot/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "EC2ModifyImageAttributePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:ModifyImageAttribute"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "EC2SnapshotAttributeModificationPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:ModifySnapshotAttribute"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::snapshot/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "CreateTagsOnCreatePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateTags"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": [
+                    "EC2 Image Builder",
+                    "EC2 Fast Launch"
+                  ],
+                  "ec2:CreateAction": [
+                    "CreateImage",
+                    "RunInstances"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "CreateCustomerTagsPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateTags"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*",
+                "arn:aws:ec2:*:*:export-image-task/*"
+              ]
+            },
+            {
+              "Sid": "CreateEC2ImageBuilderTagsPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateTags"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::snapshot/*",
+                "arn:aws:ec2:*:*:launch-template/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": [
+                    "EC2 Image Builder",
+                    "EC2 Fast Launch"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "AttachImageWatermarkPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:AttachImageWatermark"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "UpdateCustomerLicensePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "license-manager:UpdateLicenseSpecificationsForResource"
+              ],
+              "Resource": [
+                "arn:aws:license-manager:*:*:license-configuration:*"
+              ]
+            },
+            {
+              "Sid": "PublishNotificationToCustomerSNSPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "sns:Publish"
+              ],
+              "Resource": [
+                "arn:aws:sns:*:*:*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "SystemsManagerPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DescribeInstanceInformation",
+                "ssm:GetCommandInvocation",
+                "ssm:ListCommandInvocations",
+                "ssm:ListInventoryEntries"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "SystemsManagerPermissionsForAssociation",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DescribeAssociationExecutions"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:association/*"
+              ]
+            },
+            {
+              "Sid": "SystemsManagerPermissionsForInstance",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DescribeInstanceAssociationsStatus"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:instance/*"
+              ]
+            },
+            {
+              "Sid": "SendCommandDocumentPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:SendCommand"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:document/AWS-RunPowerShellScript",
+                "arn:aws:ssm:*:*:document/AWS-RunShellScript",
+                "arn:aws:ssm:*:*:document/AWSEC2-RunSysprep"
+              ]
+            },
+            {
+              "Sid": "SendCommandEC2ImageBuilderInstancePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:SendCommand"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:instance/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "InventoryCollectionAssociationPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:CreateAssociation"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:association/*",
+                "arn:aws:ssm:*:*:document/AWS-GatherSoftwareInventory"
+              ]
+            },
+            {
+              "Sid": "InventoryCollectionInstancePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:CreateAssociation"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:instance/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "InventoryCollectionTagPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:AddTagsToResource"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:association/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "DeleteInventoryCollectionAssociationPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DeleteAssociation"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:association/*"
+              ]
+            },
+            {
+              "Sid": "EC2KMSPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncryptFrom",
+                "kms:ReEncryptTo",
+                "kms:GenerateDataKeyWithoutPlaintext"
+              ],
+              "Resource": [
+                "arn:aws:kms:*:*:key/*"
+              ],
+              "Condition": {
+                "ForAllValues:StringEquals": {
+                  "kms:EncryptionContextKeys": [
+                    "aws:ebs:id"
+                  ]
+                },
+                "StringLike": {
+                  "kms:ViaService": [
+                    "ec2.*.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "EC2KMSDescribeKeyPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "kms:DescribeKey"
+              ],
+              "Resource": [
+                "arn:aws:kms:*:*:key/*"
+              ],
+              "Condition": {
+                "StringLike": {
+                  "kms:ViaService": [
+                    "ec2.*.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "EC2KMSGrantKeyPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "kms:CreateGrant"
+              ],
+              "Resource": [
+                "arn:aws:kms:*:*:key/*"
+              ],
+              "Condition": {
+                "Bool": {
+                  "kms:GrantIsForAWSResource": true
+                },
+                "StringLike": {
+                  "kms:ViaService": [
+                    "ec2.*.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "CrossAccountAssumeRolePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Resource": [
+                "arn:aws:iam::*:role/EC2ImageBuilderDistributionCrossAccountRole"
+              ]
+            },
+            {
+              "Sid": "CloudWatchLogsPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:log-group:/aws/imagebuilder/*"
+              ]
+            },
+            {
+              "Sid": "LaunchTemplatePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateLaunchTemplateVersion",
+                "ec2:DescribeLaunchTemplateVersions",
+                "ec2:DescribeLaunchTemplates",
+                "ec2:ModifyLaunchTemplate"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "ExportImageBuilderImagePermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:ExportImage"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "CreateExportImageTaskPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:ExportImage"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:export-image-task/*"
+              ]
+            },
+            {
+              "Sid": "CancelExportImageTaskPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CancelExportTask"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:export-image-task/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "CreateSLRForOtherServicesPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateServiceLinkedRole"
+              ],
+              "Resource": [
+                "arn:aws:iam::*:role/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": [
+                    "agentless.inspector2.amazonaws.com",
+                    "ami.inspector2.amazonaws.com",
+                    "ec2fastlaunch.amazonaws.com",
+                    "inspector2.amazonaws.com",
+                    "ssm.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "EnableFastLaunchPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:EnableFastLaunch"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*::image/*",
+                "arn:aws:ec2:*:*:launch-template/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "ListInspectorFindingsPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "inspector2:ListCoverage",
+                "inspector2:ListFindings"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "InspectorOnDemandScanningPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "inspector2:StartOnDemandScan",
+                "inspector2:GetOnDemandScanStatus",
+                "inspector2:ListOnDemandScans"
+              ],
+              "Resource": [
+                "arn:aws:inspector2:*:*:*"
+              ]
+            },
+            {
+              "Sid": "CreateECRImageForInspectorScanningPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ecr:CreateRepository",
+                "ecr:TagResource"
+              ],
+              "Resource": [
+                "arn:aws:ecr:*:*:repository/image-builder-*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "DeleteECRImageForInspectorScanningPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ecr:BatchDeleteImage"
+              ],
+              "Resource": [
+                "arn:aws:ecr:*:*:repository/image-builder-*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/CreatedBy": "EC2 Image Builder"
+                }
+              }
+            },
+            {
+              "Sid": "EventBridgePermissionsForInspectorScanning",
+              "Effect": "Allow",
+              "Action": [
+                "events:DeleteRule",
+                "events:DescribeRule",
+                "events:PutRule",
+                "events:PutTargets",
+                "events:RemoveTargets"
+              ],
+              "Resource": [
+                "arn:aws:events:*:*:rule/ImageBuilder-*"
+              ]
+            },
+            {
+              "Sid": "ParameterStorePermissionsForImageBuilderParameters",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetParameter",
+                "ssm:PutParameter"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:parameter/imagebuilder/*"
+              ]
+            },
+            {
+              "Sid": "ParameterStorePermissionsForServiceManagedParameters",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetParameter"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*::parameter/aws/service/*"
+              ]
+            },
+            {
+              "Sid": "StartImagePipelineExecutionPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "imagebuilder:StartImagePipelineExecution",
+                "imagebuilder:TagResource"
+              ],
+              "Resource": [
+                "arn:aws:imagebuilder:*:*:image-pipeline/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-06-04T17:12:14.000Z",
-    "lastUpdatedDate": "2026-07-08T16:27:23.000Z"
+    "lastUpdatedDate": "2026-10-27T23:47:08.000Z"
   },
   "ReInventTicketApprovalAccess": {
     "arn": "arn:aws:iam::aws:policy/ReInventTicketApprovalAccess",
@@ -1496455,8 +1499485,8 @@
   },
   "AmazonInspector2ThirdPartyServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonInspector2ThirdPartyServiceRolePolicy",
-    "latestVersionId": "v1",
-    "versionsCount": 1,
+    "latestVersionId": "v2",
+    "versionsCount": 2,
     "versions": {
       "v1": {
         "createdDate": "2026-06-26T15:27:27.000Z",
@@ -1496654,10 +1499684,211 @@
             }
           ]
         }
+      },
+      "v2": {
+        "createdDate": "2026-06-26T15:27:27.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "MultiCloudResourceDiscovery",
+              "Effect": "Allow",
+              "Action": [
+                "resource-explorer-2:Search"
+              ],
+              "Resource": "arn:aws:resource-explorer-2:*:*:view/ServiceViewForInspector*/service-view"
+            },
+            {
+              "Sid": "MultiCloudStreamingAccess",
+              "Effect": "Allow",
+              "Action": [
+                "resource-explorer-2:CreateStreamingAccessForService",
+                "resource-explorer-2:ListStreamingAccessForServices",
+                "resource-explorer-2:DeleteStreamingAccessForService"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "MultiCloudSsmAssociationWrite",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:CreateAssociation",
+                "ssm:UpdateAssociation",
+                "ssm:DeleteAssociation",
+                "ssm:StartAssociationsOnce"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:document/AWS-InstallDistributorPackageOnAzure*",
+                "arn:aws:ssm:*:*:document/AWS-InstallDistributorPackageOnGcp*",
+                "arn:aws:ssm:*:*:association/*"
+              ]
+            },
+            {
+              "Sid": "MultiCloudSsmAssociationDescribe",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DescribeAssociation"
+              ],
+              "Resource": "arn:aws:ssm:*:*:association/*"
+            },
+            {
+              "Sid": "MultiCloudSsmAssociationList",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:ListAssociations",
+                "ssm:DescribeAssociationExecutions",
+                "ssm:DescribeAssociationExecutionTargets"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "MultiCloudSsmGetDocument",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetDocument"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:document/AmazonInspector2-*",
+                "arn:aws:ssm:*:*:document/AWS-InstallDistributorPackageOnAzure*",
+                "arn:aws:ssm:*:*:document/AWS-InstallDistributorPackageOnGcp*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "MultiCloudSsmAutomation",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:StartAutomationExecution",
+                "ssm:GetAutomationExecution",
+                "ssm:DescribeAutomationExecutions",
+                "ssm:DescribeAutomationStepExecutions",
+                "ssm:StopAutomationExecution"
+              ],
+              "Resource": [
+                "arn:aws:ssm:*:*:document/AWS-InstallDistributorPackageOnAzure*",
+                "arn:aws:ssm:*:*:document/AWS-InstallDistributorPackageOnGcp*",
+                "arn:aws:ssm:*:*:automation-execution/*"
+              ]
+            },
+            {
+              "Sid": "MultiCloudCloudConnectorManagement",
+              "Effect": "Allow",
+              "Action": [
+                "ssm:CreateCloudConnector",
+                "ssm:UpdateCloudConnector",
+                "ssm:DeleteCloudConnector",
+                "ssm:GetCloudConnector",
+                "ssm:ListCloudConnectors",
+                "ssm:AddTagsToResource",
+                "ssm:RemoveTagsFromResource",
+                "ssm:ListTagsForResource"
+              ],
+              "Resource": "arn:aws:ssm:*:*:cloud-connector/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "MultiCloudSsmPassRole",
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": [
+                "arn:aws:iam::*:role/Inspector2SSMFederationRole*",
+                "arn:aws:iam::*:role/Inspector2SSMDispatchRole*",
+                "arn:aws:iam::*:role/Inspector2SSMAssumeRole*",
+                "arn:aws:iam::*:role/Inspector2VmScannerRole*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": "ssm.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "MultiCloudIamGetRole",
+              "Effect": "Allow",
+              "Action": "iam:GetRole",
+              "Resource": [
+                "arn:aws:iam::*:role/Inspector2SSMFederationRole*",
+                "arn:aws:iam::*:role/Inspector2SSMDispatchRole*",
+                "arn:aws:iam::*:role/Inspector2SSMAssumeRole*",
+                "arn:aws:iam::*:role/Inspector2VmScannerRole*"
+              ]
+            },
+            {
+              "Sid": "MultiCloudConfigSLRecWrite",
+              "Effect": "Allow",
+              "Action": [
+                "config:PutThirdPartyServiceLinkedConfigurationRecorder",
+                "config:DeleteServiceLinkedConfigurationRecorder",
+                "config:DescribeConfigurationRecorders"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "MultiCloudConfigConnectorRead",
+              "Effect": "Allow",
+              "Action": [
+                "config:ListConfigurationRecorders",
+                "config:GetConnector"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "MultiCloudConfigMetrics",
+              "Effect": "Allow",
+              "Action": [
+                "cloudwatch:GetMetricData"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowGetWebIdentityToken",
+              "Effect": "Allow",
+              "Action": "sts:GetWebIdentityToken",
+              "Resource": "*",
+              "Condition": {
+                "Null": {
+                  "sts:IdentityTokenAudience": "false"
+                },
+                "ForAnyValue:StringLike": {
+                  "sts:IdentityTokenAudience": [
+                    "api://AzureADTokenExchange",
+                    "https://sts.googleapis.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "MultiCloudSsmSLRCreation",
+              "Effect": "Allow",
+              "Action": "iam:CreateServiceLinkedRole",
+              "Resource": [
+                "arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-06-26T15:27:27.000Z",
-    "lastUpdatedDate": "2026-06-26T15:27:27.000Z"
+    "lastUpdatedDate": "2026-10-27T20:37:07.000Z"
   },
   "AccountAccessManagerServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AccountAccessManagerServiceRolePolicy",
@@ -1532996,5 +1536227,31 @@
     },
     "createdDate": "2026-10-26T17:27:07.000Z",
     "lastUpdatedDate": "2026-10-26T17:27:07.000Z"
+  },
+  "AWSXRayAPIKeyAccess": {
+    "arn": "arn:aws:iam::aws:policy/AWSXRayAPIKeyAccess",
+    "latestVersionId": "v1",
+    "versionsCount": 1,
+    "versions": {
+      "v1": {
+        "createdDate": "2026-10-27T18:17:07.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "XRayAPIKeyTraceIngestion",
+              "Effect": "Allow",
+              "Action": [
+                "xray:CallWithBearerToken",
+                "xray:PutTraceSegments"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "createdDate": "2026-10-27T18:17:07.000Z",
+    "lastUpdatedDate": "2026-10-27T18:17:07.000Z"
   }
 }
