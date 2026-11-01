@@ -1527317,8 +1527317,8 @@
   },
   "AWSRevenueAttributionManagement": {
     "arn": "arn:aws:iam::aws:policy/AWSRevenueAttributionManagement",
-    "latestVersionId": "v1",
-    "versionsCount": 1,
+    "latestVersionId": "v2",
+    "versionsCount": 2,
     "versions": {
       "v1": {
         "createdDate": "2026-06-30T16:57:13.000Z",
@@ -1527396,10 +1527396,106 @@
             }
           ]
         }
+      },
+      "v2": {
+        "createdDate": "2026-06-30T16:57:13.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "RevenueAttributionCreation",
+              "Effect": "Allow",
+              "Action": [
+                "partnercentral:CreateRevenueAttribution"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "partnercentral:Catalog": [
+                    "AWS",
+                    "Sandbox"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "RevenueAttributionListing",
+              "Effect": "Allow",
+              "Action": [
+                "partnercentral:ListRevenueAttributions"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "partnercentral:Catalog": [
+                    "AWS",
+                    "Sandbox"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "RevenueAttributionManagement",
+              "Effect": "Allow",
+              "Action": [
+                "partnercentral:GetRevenueAttribution",
+                "partnercentral:UpdateRevenueAttribution"
+              ],
+              "Resource": "arn:aws:partnercentral:*:*:catalog/*/revenue-attribution/*",
+              "Condition": {
+                "StringEquals": {
+                  "partnercentral:Catalog": [
+                    "AWS",
+                    "Sandbox"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "PartnerCentralContentAccess",
+              "Effect": "Allow",
+              "Action": [
+                "partnercentral:GetPartnerCentralContentDocument",
+                "partnercentral:GetPartnerCentralContentMetadata",
+                "partnercentral:ListPartnerCentralContent",
+                "partnercentral:SearchPartnerCentralContent"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "partnercentral:Catalog": [
+                    "AWS",
+                    "Sandbox"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "TaggingAccess",
+              "Effect": "Allow",
+              "Action": [
+                "partnercentral:TagResource",
+                "partnercentral:UntagResource",
+                "partnercentral:ListTagsForResource"
+              ],
+              "Resource": [
+                "arn:aws:partnercentral:*:*:catalog/*/revenue-attribution/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "partnercentral:Catalog": [
+                    "AWS",
+                    "Sandbox"
+                  ]
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-06-30T16:57:13.000Z",
-    "lastUpdatedDate": "2026-06-30T16:57:13.000Z"
+    "lastUpdatedDate": "2026-10-31T13:37:06.000Z"
   },
   "AWSPartnerCentralRevenueAttributionManagement": {
     "arn": "arn:aws:iam::aws:policy/AWSPartnerCentralRevenueAttributionManagement",
