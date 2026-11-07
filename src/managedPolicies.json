@@ -318288,8 +318288,8 @@
   },
   "AmazonRedshiftServiceLinkedRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonRedshiftServiceLinkedRolePolicy",
-    "latestVersionId": "v15",
-    "versionsCount": 15,
+    "latestVersionId": "v16",
+    "versionsCount": 16,
     "versions": {
       "v1": {
         "createdDate": "2017-09-18T19:19:45.000Z",
@@ -320669,10 +320669,348 @@
             }
           ]
         }
+      },
+      "v16": {
+        "createdDate": "2017-09-18T19:19:45.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "Ec2VpcPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeVpcs",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DescribeAddresses",
+                "ec2:AssociateAddress",
+                "ec2:DisassociateAddress",
+                "ec2:CreateNetworkInterface",
+                "ec2:DeleteNetworkInterface",
+                "ec2:ModifyNetworkInterfaceAttribute",
+                "ec2:CreateVpcEndpoint",
+                "ec2:DeleteVpcEndpoints",
+                "ec2:DescribeVpcEndpoints",
+                "ec2:ModifyVpcEndpoint"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "PublicAccessCreateEip",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:AllocateAddress"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:elastic-ip/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/Redshift": "true"
+                }
+              }
+            },
+            {
+              "Sid": "PublicAccessReleaseEip",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:ReleaseAddress"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:elastic-ip/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/Redshift": "true"
+                }
+              }
+            },
+            {
+              "Sid": "EnableCreationAndManagementOfRedshiftCloudwatchLogGroups",
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:PutRetentionPolicy"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:log-group:/aws/redshift/*"
+              ]
+            },
+            {
+              "Sid": "EnableCreationAndManagementOfRedshiftCloudwatchLogStreams",
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:log-group:/aws/redshift/*:log-stream:*"
+              ]
+            },
+            {
+              "Sid": "CreateSecurityGroupWithTags",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateSecurityGroup"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:security-group/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:RequestTag/Redshift": "true"
+                }
+              }
+            },
+            {
+              "Sid": "SecurityGroupPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:AuthorizeSecurityGroupEgress",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:RevokeSecurityGroupEgress",
+                "ec2:RevokeSecurityGroupIngress",
+                "ec2:ModifySecurityGroupRules",
+                "ec2:DeleteSecurityGroup"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:security-group/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/Redshift": "true"
+                }
+              }
+            },
+            {
+              "Sid": "CreateSecurityGroup",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:CreateSecurityGroup"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:vpc/*"
+              ]
+            },
+            {
+              "Sid": "CreateTagsOnResources",
+              "Effect": "Allow",
+              "Action": "ec2:CreateTags",
+              "Resource": [
+                "arn:aws:ec2:*:*:subnet/*",
+                "arn:aws:ec2:*:*:route-table/*",
+                "arn:aws:ec2:*:*:security-group/*",
+                "arn:aws:ec2:*:*:vpc/*",
+                "arn:aws:ec2:*:*:internet-gateway/*",
+                "arn:aws:ec2:*:*:elastic-ip/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "ec2:CreateAction": [
+                    "CreateVpc",
+                    "CreateSecurityGroup",
+                    "CreateSubnet",
+                    "CreateInternetGateway",
+                    "CreateRouteTable",
+                    "AllocateAddress"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "VPCPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeVpcAttribute",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeInternetGateways",
+                "ec2:DescribeSecurityGroupRules",
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeNetworkAcls",
+                "ec2:DescribeRouteTables"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "CloudWatch",
+              "Effect": "Allow",
+              "Action": [
+                "cloudwatch:PutMetricData"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "cloudwatch:namespace": [
+                    "AWS/Redshift-Serverless",
+                    "AWS/Redshift"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "SecretManager",
+              "Effect": "Allow",
+              "Action": [
+                "secretsmanager:DescribeSecret",
+                "secretsmanager:DeleteSecret",
+                "secretsmanager:PutSecretValue",
+                "secretsmanager:UpdateSecret",
+                "secretsmanager:UpdateSecretVersionStage",
+                "secretsmanager:RotateSecret"
+              ],
+              "Resource": [
+                "arn:aws:secretsmanager:*:*:secret:redshift!*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "secretsmanager:ResourceTag/aws:secretsmanager:owningService": "redshift",
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "SecretsManagerRandomPassword",
+              "Effect": "Allow",
+              "Action": [
+                "secretsmanager:GetRandomPassword"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "IPV6Permissions",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:AssignIpv6Addresses",
+                "ec2:UnassignIpv6Addresses"
+              ],
+              "Resource": [
+                "arn:aws:ec2:*:*:network-interface/*"
+              ]
+            },
+            {
+              "Sid": "ServiceQuotasToCheckCustomerLimits",
+              "Effect": "Allow",
+              "Action": [
+                "servicequotas:GetServiceQuota"
+              ],
+              "Resource": [
+                "arn:aws:servicequotas:*:*:ec2/L-0263D0A3",
+                "arn:aws:servicequotas:*:*:vpc/L-29B6F2EB"
+              ]
+            },
+            {
+              "Sid": "DiscoverRedshiftCatalogs",
+              "Effect": "Allow",
+              "Action": [
+                "glue:GetCatalog",
+                "glue:GetCatalogs"
+              ],
+              "Resource": [
+                "arn:aws:glue:*:*:catalog",
+                "arn:aws:glue:*:*:catalog/*"
+              ],
+              "Condition": {
+                "Bool": {
+                  "glue:EnabledForRedshiftAutoDiscovery": "true"
+                },
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "LakeFormationGetMetadataAccessForFederatedCatalogs",
+              "Effect": "Allow",
+              "Action": [
+                "lakeformation:GetDataAccess"
+              ],
+              "Resource": [
+                "*"
+              ],
+              "Condition": {
+                "Bool": {
+                  "lakeformation:EnabledOnlyForMetaDataAccess": "true"
+                },
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                },
+                "ForAnyValue:StringEquals": {
+                  "aws:CalledVia": "glue.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AllowIdentityCenterSameAccount",
+              "Effect": "Allow",
+              "Action": [
+                "identitystore:GetUserId",
+                "identitystore:ListGroupMembershipsForMember",
+                "identitystore:DescribeGroup",
+                "sso:ListInstances"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "AllowIdentityCenterSameOrg",
+              "Effect": "Allow",
+              "Action": [
+                "identitystore:GetUserId",
+                "identitystore:ListGroupMembershipsForMember",
+                "identitystore:DescribeGroup",
+                "sso:ListInstances"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceOrgID": "${aws:PrincipalOrgID}"
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsAccessViaIdentityCenter",
+              "Effect": "Allow",
+              "Action": [
+                "kms:Decrypt"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ArnLike": {
+                  "kms:EncryptionContext:aws:sso:instance-arn": "arn:*:sso:::instance/*"
+                },
+                "StringLike": {
+                  "kms:ViaService": "sso.*.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsAccessViaIdentityStore",
+              "Effect": "Allow",
+              "Action": [
+                "kms:Decrypt"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ArnLike": {
+                  "kms:EncryptionContext:aws:identitystore:identitystore-arn": "arn:*:identitystore::*:identitystore/*"
+                },
+                "StringLike": {
+                  "kms:ViaService": "identitystore.*.amazonaws.com"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2017-09-18T19:19:45.000Z",
-    "lastUpdatedDate": "2025-02-19T17:22:07.000Z"
+    "lastUpdatedDate": "2026-11-06T19:27:07.000Z"
   },
   "AWSElasticLoadBalancingServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AWSElasticLoadBalancingServiceRolePolicy",
@@ -579822,8 +580160,8 @@
   },
   "ComputeOptimizerServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/ComputeOptimizerServiceRolePolicy",
-    "latestVersionId": "v10",
-    "versionsCount": 10,
+    "latestVersionId": "v11",
+    "versionsCount": 11,
     "versions": {
       "v1": {
         "createdDate": "2019-12-03T08:45:19.000Z",
@@ -580310,10 +580648,125 @@
             }
           ]
         }
+      },
+      "v11": {
+        "createdDate": "2019-12-03T08:45:19.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "ComputeOptimizerFullAccess",
+              "Effect": "Allow",
+              "Action": [
+                "compute-optimizer:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AwsOrgsAccess",
+              "Effect": "Allow",
+              "Action": [
+                "organizations:DescribeOrganization",
+                "organizations:ListAccounts",
+                "organizations:ListAWSServiceAccessForOrganization",
+                "organizations:ListDelegatedAdministrators",
+                "organizations:ListParents",
+                "organizations:ListChildren",
+                "organizations:DescribeOrganizationalUnit"
+              ],
+              "Resource": [
+                "*"
+              ]
+            },
+            {
+              "Sid": "CloudWatchAccess",
+              "Effect": "Allow",
+              "Action": [
+                "cloudwatch:GetMetricData",
+                "cloudwatch:DescribeAlarms"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AutoScalingAccess",
+              "Effect": "Allow",
+              "Action": [
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribePolicies",
+                "autoscaling:DescribeScheduledActions"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "Ec2Access",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeInstances",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeNatGateways",
+                "ec2:DescribeRouteTables"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "ElastiCacheAccess",
+              "Effect": "Allow",
+              "Action": [
+                "elasticache:DescribeCacheClusters",
+                "elasticache:DescribeServerlessCaches"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "MemoryDBAccess",
+              "Effect": "Allow",
+              "Action": [
+                "memorydb:DescribeClusters"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "DocumentDBAccess",
+              "Effect": "Allow",
+              "Action": [
+                "rds:DescribeDBClusters"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "DynamoDBAccess",
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:ListTables",
+                "dynamodb:DescribeTable"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "WorkSpacesAccess",
+              "Effect": "Allow",
+              "Action": [
+                "workspaces:DescribeWorkspaces",
+                "workspaces:DescribeWorkspacesConnectionStatus"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "SageMakerAccess",
+              "Effect": "Allow",
+              "Action": [
+                "sagemaker:ListEndpoints",
+                "sagemaker:DescribeEndpoint"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
       }
     },
     "createdDate": "2019-12-03T08:45:19.000Z",
-    "lastUpdatedDate": "2026-05-27T17:42:11.000Z"
+    "lastUpdatedDate": "2026-11-06T20:57:07.000Z"
   },
   "AmazonCodeGuruReviewerReadOnlyAccess": {
     "arn": "arn:aws:iam::aws:policy/AmazonCodeGuruReviewerReadOnlyAccess",
@@ -1040722,8 +1041175,8 @@
   },
   "AmazonConnectSynchronizationServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AmazonConnectSynchronizationServiceRolePolicy",
-    "latestVersionId": "v7",
-    "versionsCount": 7,
+    "latestVersionId": "v8",
+    "versionsCount": 8,
     "versions": {
       "v1": {
         "createdDate": "2023-10-27T22:38:25.000Z",
@@ -1041640,10 +1042093,418 @@
             }
           ]
         }
+      },
+      "v8": {
+        "createdDate": "2023-10-27T22:38:25.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowConnectActions",
+              "Effect": "Allow",
+              "Action": [
+                "connect:Create*",
+                "connect:BatchCreate*",
+                "connect:Update*",
+                "connect:BatchUpdate*",
+                "connect:Delete*",
+                "connect:BatchDelete*",
+                "connect:Describe*",
+                "connect:BatchDescribe*",
+                "connect:List*",
+                "connect:Search*",
+                "connect:Associate*",
+                "connect:Disassociate*",
+                "connect:Get*",
+                "connect:BatchGet*",
+                "connect:Import*",
+                "connect:TagResource",
+                "connect:UntagResource"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "DisallowedConnectActions",
+              "Effect": "Deny",
+              "Action": [
+                "connect:Start*",
+                "connect:Stop*",
+                "connect:Resume*",
+                "connect:Suspend*",
+                "connect:*Contact",
+                "connect:SearchContacts",
+                "connect:*ContactAttributes*",
+                "connect:*RealtimeContact*",
+                "connect:*AnalyticsData*",
+                "connect:*MetricData*",
+                "connect:*UserData*",
+                "connect:*ContactEvaluation",
+                "connect:GetAttachedFile",
+                "connect:BatchGetAttachedFileMetadata",
+                "connect:DeleteAttachedFile",
+                "connect:CompleteAttachedFileUpload",
+                "connect:CreateAttachedFile",
+                "connect:UpdateContactSchedule",
+                "connect:UpdateContactRoutingData",
+                "connect:ListContactReferences",
+                "connect:CreateParticipant",
+                "connect:CreatePersistentContactAssociation",
+                "connect:CreateInstance",
+                "connect:DeleteInstance",
+                "connect:ListInstances",
+                "connect:ReplicateInstance",
+                "connect:GetFederationToken",
+                "connect:ClaimPhoneNumber",
+                "connect:ImportPhoneNumber",
+                "connect:ReleasePhoneNumber",
+                "connect:SearchAvailablePhoneNumbers",
+                "connect:CreateTrafficDistributionGroup",
+                "connect:DeleteTrafficDistributionGroup",
+                "connect:GetTrafficDistribution",
+                "connect:UpdateTrafficDistribution"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowPutMetricsForConnectNamespace",
+              "Effect": "Allow",
+              "Action": "cloudwatch:PutMetricData",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "cloudwatch:namespace": "AWS/Connect"
+                }
+              }
+            },
+            {
+              "Sid": "AllowAppIntegrationsListApplications",
+              "Effect": "Allow",
+              "Action": [
+                "app-integrations:ListApplicationAssociations",
+                "app-integrations:ListApplications"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AllowAppIntegrationsScopedToApplications",
+              "Effect": "Allow",
+              "Action": [
+                "app-integrations:CreateApplication",
+                "app-integrations:CreateApplicationAssociation",
+                "app-integrations:GetApplication",
+                "app-integrations:UpdateApplication",
+                "app-integrations:DeleteApplication",
+                "app-integrations:ListTagsForResource",
+                "app-integrations:TagResource",
+                "app-integrations:UntagResource"
+              ],
+              "Resource": "arn:aws:app-integrations:*:*:application/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "AllowAppIntegrationsScopedToApplicationAssociations",
+              "Effect": "Allow",
+              "Action": [
+                "app-integrations:DeleteApplicationAssociation",
+                "app-integrations:ListTagsForResource",
+                "app-integrations:TagResource",
+                "app-integrations:UntagResource"
+              ],
+              "Resource": "arn:aws:app-integrations:*:*:application-association/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "AllowWisdomActions",
+              "Effect": "Allow",
+              "Action": [
+                "wisdom:CreateAssistant",
+                "wisdom:DeleteAssistant",
+                "wisdom:GetAssistant",
+                "wisdom:ListAssistants",
+                "wisdom:UpdateAssistantAIAgent",
+                "wisdom:RemoveAssistantAIAgent",
+                "wisdom:CreateAssistantAssociation",
+                "wisdom:DeleteAssistantAssociation",
+                "wisdom:GetAssistantAssociation",
+                "wisdom:ListAssistantAssociations",
+                "wisdom:CreateAIAgent",
+                "wisdom:CreateAIAgentVersion",
+                "wisdom:DeleteAIAgent",
+                "wisdom:DeleteAIAgentVersion",
+                "wisdom:GetAIAgent",
+                "wisdom:ListAIAgents",
+                "wisdom:ListAIAgentVersions",
+                "wisdom:UpdateAIAgent",
+                "wisdom:CreateAIPrompt",
+                "wisdom:CreateAIPromptVersion",
+                "wisdom:DeleteAIPrompt",
+                "wisdom:DeleteAIPromptVersion",
+                "wisdom:GetAIPrompt",
+                "wisdom:ListAIPrompts",
+                "wisdom:ListAIPromptVersions",
+                "wisdom:UpdateAIPrompt",
+                "wisdom:CreateAIGuardrail",
+                "wisdom:CreateAIGuardrailVersion",
+                "wisdom:DeleteAIGuardrail",
+                "wisdom:DeleteAIGuardrailVersion",
+                "wisdom:GetAIGuardrail",
+                "wisdom:ListAIGuardrails",
+                "wisdom:ListAIGuardrailVersions",
+                "wisdom:UpdateAIGuardrail",
+                "wisdom:CreateKnowledgeBase",
+                "wisdom:DeleteKnowledgeBase",
+                "wisdom:GetKnowledgeBase",
+                "wisdom:ListKnowledgeBases",
+                "wisdom:UpdateKnowledgeBaseTemplateUri",
+                "wisdom:RemoveKnowledgeBaseTemplateUri",
+                "wisdom:CreateContent",
+                "wisdom:StartContentUpload",
+                "wisdom:DeleteContent",
+                "wisdom:GetContent",
+                "wisdom:GetContentSummary",
+                "wisdom:ListContents",
+                "wisdom:UpdateContent",
+                "wisdom:CreateContentAssociation",
+                "wisdom:DeleteContentAssociation",
+                "wisdom:GetContentAssociation",
+                "wisdom:ListContentAssociations",
+                "wisdom:CreateQuickResponse",
+                "wisdom:DeleteQuickResponse",
+                "wisdom:GetQuickResponse",
+                "wisdom:ListQuickResponses",
+                "wisdom:UpdateQuickResponse",
+                "wisdom:ListTagsForResource",
+                "wisdom:TagResource",
+                "wisdom:UntagResource",
+                "wisdom:ListModels"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsKeyValidationForQinConnectReplicaResources",
+              "Effect": "Allow",
+              "Action": "kms:DescribeKey",
+              "Resource": "arn:aws:kms:*:*:key/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                },
+                "StringLike": {
+                  "kms:ViaService": [
+                    "wisdom.*.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsGrantCreationForQinConnectReplicaAssistant",
+              "Effect": "Allow",
+              "Action": "kms:CreateGrant",
+              "Resource": "arn:aws:kms:*:*:key/*",
+              "Condition": {
+                "Bool": {
+                  "kms:GrantIsForAWSResource": "true"
+                },
+                "ForAllValues:StringEquals": {
+                  "kms:EncryptionContextKeys": [
+                    "aws:wisdom:assistant:arn"
+                  ],
+                  "kms:GrantOperations": [
+                    "DescribeKey",
+                    "Decrypt",
+                    "GenerateDataKey",
+                    "CreateGrant"
+                  ]
+                },
+                "Null": {
+                  "kms:EncryptionContextKeys": "false",
+                  "kms:GrantOperations": "false"
+                },
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}",
+                  "kms:GrantConstraintType": "EncryptionContextSubset"
+                },
+                "StringLike": {
+                  "kms:EncryptionContext:aws:wisdom:assistant:arn": "arn:aws:wisdom:*:${aws:PrincipalAccount}:assistant/*",
+                  "kms:ViaService": "wisdom.*.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsGrantCreationForQinConnectReplicaKnowledgeBase",
+              "Effect": "Allow",
+              "Action": "kms:CreateGrant",
+              "Resource": "arn:aws:kms:*:*:key/*",
+              "Condition": {
+                "Bool": {
+                  "kms:GrantIsForAWSResource": "true"
+                },
+                "ForAllValues:StringEquals": {
+                  "kms:EncryptionContextKeys": [
+                    "aws:wisdom:knowledgeBase:arn"
+                  ],
+                  "kms:GrantOperations": [
+                    "DescribeKey",
+                    "Decrypt",
+                    "GenerateDataKey",
+                    "CreateGrant"
+                  ]
+                },
+                "Null": {
+                  "kms:EncryptionContextKeys": "false",
+                  "kms:GrantOperations": "false"
+                },
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}",
+                  "kms:GrantConstraintType": "EncryptionContextSubset"
+                },
+                "StringLike": {
+                  "kms:EncryptionContext:aws:wisdom:knowledgeBase:arn": "arn:aws:wisdom:*:${aws:PrincipalAccount}:knowledge-base/*",
+                  "kms:ViaService": "wisdom.*.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsCryptoForQinConnectReplicaAssistant",
+              "Effect": "Allow",
+              "Action": [
+                "kms:Decrypt",
+                "kms:GenerateDataKey",
+                "kms:GenerateDataKeyWithoutPlaintext"
+              ],
+              "Resource": "arn:aws:kms:*:*:key/*",
+              "Condition": {
+                "ForAllValues:StringEquals": {
+                  "kms:EncryptionContextKeys": [
+                    "aws:wisdom:assistant:arn"
+                  ]
+                },
+                "Null": {
+                  "kms:EncryptionContextKeys": "false"
+                },
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                },
+                "StringLike": {
+                  "kms:EncryptionContext:aws:wisdom:assistant:arn": "arn:aws:wisdom:*:${aws:PrincipalAccount}:assistant/*",
+                  "kms:ViaService": "wisdom.*.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsCryptoForQinConnectReplicaKnowledgeBase",
+              "Effect": "Allow",
+              "Action": [
+                "kms:Decrypt",
+                "kms:GenerateDataKey",
+                "kms:GenerateDataKeyWithoutPlaintext"
+              ],
+              "Resource": "arn:aws:kms:*:*:key/*",
+              "Condition": {
+                "ForAllValues:StringEquals": {
+                  "kms:EncryptionContextKeys": [
+                    "aws:wisdom:knowledgeBase:arn"
+                  ]
+                },
+                "Null": {
+                  "kms:EncryptionContextKeys": "false"
+                },
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                },
+                "StringLike": {
+                  "kms:EncryptionContext:aws:wisdom:knowledgeBase:arn": "arn:aws:wisdom:*:${aws:PrincipalAccount}:knowledge-base/*",
+                  "kms:ViaService": "wisdom.*.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsGrantCreationForQinConnectInstanceAssociationAssistant",
+              "Effect": "Allow",
+              "Action": "kms:CreateGrant",
+              "Resource": "arn:aws:kms:*:*:key/*",
+              "Condition": {
+                "Bool": {
+                  "kms:GrantIsForAWSResource": "true"
+                },
+                "ForAllValues:StringEquals": {
+                  "kms:EncryptionContextKeys": [
+                    "aws:wisdom:assistant:arn"
+                  ],
+                  "kms:GrantOperations": [
+                    "DescribeKey",
+                    "Decrypt",
+                    "GenerateDataKey",
+                    "GenerateDataKeyPair"
+                  ]
+                },
+                "Null": {
+                  "kms:EncryptionContextKeys": "false",
+                  "kms:GrantOperations": "false"
+                },
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}",
+                  "kms:GrantConstraintType": "EncryptionContextEquals"
+                },
+                "StringLike": {
+                  "kms:EncryptionContext:aws:wisdom:assistant:arn": "arn:aws:wisdom:*:${aws:PrincipalAccount}:assistant/*",
+                  "kms:ViaService": "connect.*.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AllowKmsGrantCreationForQinConnectInstanceAssociationKnowledgeBase",
+              "Effect": "Allow",
+              "Action": "kms:CreateGrant",
+              "Resource": "arn:aws:kms:*:*:key/*",
+              "Condition": {
+                "Bool": {
+                  "kms:GrantIsForAWSResource": "true"
+                },
+                "ForAllValues:StringEquals": {
+                  "kms:EncryptionContextKeys": [
+                    "aws:wisdom:knowledgeBase:arn"
+                  ],
+                  "kms:GrantOperations": [
+                    "DescribeKey",
+                    "Decrypt",
+                    "GenerateDataKey",
+                    "GenerateDataKeyPair"
+                  ]
+                },
+                "Null": {
+                  "kms:EncryptionContextKeys": "false",
+                  "kms:GrantOperations": "false"
+                },
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}",
+                  "kms:GrantConstraintType": "EncryptionContextEquals"
+                },
+                "StringLike": {
+                  "kms:EncryptionContext:aws:wisdom:knowledgeBase:arn": "arn:aws:wisdom:*:${aws:PrincipalAccount}:knowledge-base/*",
+                  "kms:ViaService": "connect.*.amazonaws.com"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2023-10-27T22:38:25.000Z",
-    "lastUpdatedDate": "2026-10-28T19:17:08.000Z"
+    "lastUpdatedDate": "2026-11-06T19:27:07.000Z"
   },
   "AmazonSageMakerCanvasDataPrepFullAccess": {
     "arn": "arn:aws:iam::aws:policy/AmazonSageMakerCanvasDataPrepFullAccess",
@@ -1052969,8 +1053830,8 @@
   },
   "AmazonSageMakerClusterInstanceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/AmazonSageMakerClusterInstanceRolePolicy",
-    "latestVersionId": "v2",
-    "versionsCount": 2,
+    "latestVersionId": "v3",
+    "versionsCount": 3,
     "versions": {
       "v1": {
         "createdDate": "2023-11-29T15:11:26.000Z",
@@ -1053115,10 +1053976,97 @@
             }
           ]
         }
+      },
+      "v3": {
+        "createdDate": "2023-11-29T15:11:26.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "CloudwatchLogStreamPublishPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:log-group:/aws/sagemaker/Clusters/*:log-stream:*"
+              ]
+            },
+            {
+              "Sid": "CloudwatchLogGroupCreationPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup"
+              ],
+              "Resource": [
+                "arn:aws:logs:*:*:log-group:/aws/sagemaker/Clusters/*"
+              ]
+            },
+            {
+              "Sid": "CloudwatchPutMetricDataAccess",
+              "Effect": "Allow",
+              "Action": [
+                "cloudwatch:PutMetricData"
+              ],
+              "Resource": [
+                "*"
+              ],
+              "Condition": {
+                "StringEqualsIfExists": {
+                  "cloudwatch:namespace": "/aws/sagemaker/Clusters"
+                }
+              }
+            },
+            {
+              "Sid": "DataRetrievalFromS3BucketPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket",
+                "s3:GetObject"
+              ],
+              "Resource": [
+                "arn:aws:s3:::sagemaker-*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "SSMConnectivityPermissions",
+              "Effect": "Allow",
+              "Action": [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "CloudwatchPutProfileRecordsAccess",
+              "Effect": "Allow",
+              "Action": [
+                "cloudwatch:PutProfileRecords"
+              ],
+              "Resource": [
+                "arn:aws:cloudwatch:*:*:dataset/*"
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2023-11-29T15:11:26.000Z",
-    "lastUpdatedDate": "2026-10-16T20:17:08.000Z"
+    "lastUpdatedDate": "2026-11-06T22:37:07.000Z"
   },
   "AWSZonalAutoshiftPracticeRunSLRPolicy": {
     "arn": "arn:aws:iam::aws:policy/aws-service-role/AWSZonalAutoshiftPracticeRunSLRPolicy",
@@ -1508915,8 +1509863,8 @@
   },
   "AIDevOpsAgentAccessPolicy": {
     "arn": "arn:aws:iam::aws:policy/AIDevOpsAgentAccessPolicy",
-    "latestVersionId": "v13",
-    "versionsCount": 13,
+    "latestVersionId": "v14",
+    "versionsCount": 14,
     "versions": {
       "v1": {
         "createdDate": "2026-03-26T03:42:09.000Z",
@@ -1520779,10 +1521727,1025 @@
             }
           ]
         }
+      },
+      "v14": {
+        "createdDate": "2026-03-26T03:42:09.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AIOPSServiceWriteAccess",
+              "Effect": "Allow",
+              "Action": [
+                "cloudtrail:StartQuery",
+                "support:CreateCase"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AIOPSServiceAccess",
+              "Effect": "Allow",
+              "Action": [
+                "access-analyzer:GetAnalyzer",
+                "access-analyzer:List*",
+                "acm-pca:Describe*",
+                "acm-pca:GetCertificate",
+                "acm-pca:GetCertificateAuthorityCertificate",
+                "acm-pca:GetCertificateAuthorityCsr",
+                "acm-pca:List*",
+                "acm:DescribeCertificate",
+                "acm:GetAccountConfiguration",
+                "acm:GetCertificate",
+                "acm:ListCertificates",
+                "aidevops:GetAsset",
+                "aidevops:GetAssetContent",
+                "aidevops:GetAssetFile",
+                "aidevops:GetKnowledgeItem",
+                "aidevops:ListAssetFiles",
+                "aidevops:ListAssets",
+                "aidevops:ListAssetTypes",
+                "aidevops:ListAssetVersions",
+                "aidevops:ListKnowledgeItems",
+                "airflow:GetEnvironment",
+                "airflow:List*",
+                "amplify:GetApp",
+                "amplify:GetBranch",
+                "amplify:GetDomainAssociation",
+                "amplify:List*",
+                "aoss:BatchGetCollection",
+                "aoss:BatchGetLifecyclePolicy",
+                "aoss:BatchGetVpcEndpoint",
+                "aoss:GetAccessPolicy",
+                "aoss:GetSecurityConfig",
+                "aoss:GetSecurityPolicy",
+                "aoss:List*",
+                "appconfig:GetApplication",
+                "appconfig:GetConfigurationProfile",
+                "appconfig:GetEnvironment",
+                "appconfig:GetHostedConfigurationVersion",
+                "appconfig:List*",
+                "appflow:Describe*",
+                "appflow:List*",
+                "application-autoscaling:Describe*",
+                "application-signals:BatchGetServiceLevelObjectiveBudgetReport",
+                "application-signals:GetService",
+                "application-signals:GetServiceLevelObjective",
+                "application-signals:List*",
+                "applicationinsights:Describe*",
+                "applicationinsights:List*",
+                "apprunner:Describe*",
+                "apprunner:List*",
+                "appstream:Describe*",
+                "appstream:List*",
+                "appsync:GetApiAssociation",
+                "appsync:GetDataSource",
+                "appsync:GetDomainName",
+                "appsync:GetFunction",
+                "appsync:GetGraphqlApi",
+                "appsync:GetGraphqlApiEnvironmentVariables",
+                "appsync:GetIntrospectionSchema",
+                "appsync:GetResolver",
+                "appsync:GetSourceApiAssociation",
+                "appsync:List*",
+                "aps:Describe*",
+                "aps:List*",
+                "arc-zonal-shift:GetManagedResource",
+                "arc-zonal-shift:List*",
+                "athena:GetCapacityAssignmentConfiguration",
+                "athena:GetCapacityReservation",
+                "athena:GetDataCatalog",
+                "athena:GetNamedQuery",
+                "athena:GetPreparedStatement",
+                "athena:GetWorkGroup",
+                "athena:List*",
+                "auditmanager:GetAssessment",
+                "auditmanager:List*",
+                "autoscaling:Describe*",
+                "backup-gateway:GetHypervisor",
+                "backup-gateway:List*",
+                "backup:Describe*",
+                "backup:GetBackupPlan",
+                "backup:GetBackupSelection",
+                "backup:GetBackupVaultAccessPolicy",
+                "backup:GetBackupVaultNotifications",
+                "backup:GetRestoreTestingPlan",
+                "backup:GetRestoreTestingSelection",
+                "backup:List*",
+                "batch:DescribeComputeEnvironments",
+                "batch:DescribeJobQueues",
+                "batch:DescribeSchedulingPolicies",
+                "batch:List*",
+                "bcm-data-exports:Get*",
+                "bcm-data-exports:List*",
+                "bedrock:GetAgent",
+                "bedrock:GetAgentActionGroup",
+                "bedrock:GetAgentAlias",
+                "bedrock:GetAgentKnowledgeBase",
+                "bedrock:GetCustomModel",
+                "bedrock:GetDataSource",
+                "bedrock:GetFoundationModel",
+                "bedrock:GetGuardrail",
+                "bedrock:GetInferenceProfile",
+                "bedrock:GetKnowledgeBase",
+                "bedrock:GetModelInvocationLoggingConfiguration",
+                "bedrock:GetProvisionedModelThroughput",
+                "bedrock:List*",
+                "budgets:Describe*",
+                "budgets:List*",
+                "budgets:ViewBudget",
+                "ce:Describe*",
+                "ce:Get*",
+                "ce:List*",
+                "chatbot:Describe*",
+                "chatbot:GetMicrosoftTeamsChannelConfiguration",
+                "chatbot:List*",
+                "cleanrooms-ml:GetTrainingDataset",
+                "cleanrooms-ml:List*",
+                "cleanrooms:GetAnalysisTemplate",
+                "cleanrooms:GetCollaboration",
+                "cleanrooms:GetConfiguredTable",
+                "cleanrooms:GetConfiguredTableAnalysisRule",
+                "cleanrooms:GetConfiguredTableAssociation",
+                "cleanrooms:GetMembership",
+                "cleanrooms:List*",
+                "cloudformation:Describe*",
+                "cloudformation:GetResource",
+                "cloudformation:GetStackPolicy",
+                "cloudformation:GetTemplate",
+                "cloudformation:List*",
+                "cloudfront:Describe*",
+                "cloudfront:GetCachePolicy",
+                "cloudfront:GetCloudFrontOriginAccessIdentity",
+                "cloudfront:GetContinuousDeploymentPolicy",
+                "cloudfront:GetDistribution",
+                "cloudfront:GetDistributionConfig",
+                "cloudfront:GetFunction",
+                "cloudfront:GetKeyGroup",
+                "cloudfront:GetMonitoringSubscription",
+                "cloudfront:GetOriginAccessControl",
+                "cloudfront:GetOriginRequestPolicy",
+                "cloudfront:GetPublicKey",
+                "cloudfront:GetRealtimeLogConfig",
+                "cloudfront:GetResponseHeadersPolicy",
+                "cloudfront:List*",
+                "cloudtrail:Describe*",
+                "cloudtrail:GetChannel",
+                "cloudtrail:GetEventConfiguration",
+                "cloudtrail:GetEventDataStore",
+                "cloudtrail:GetEventSelectors",
+                "cloudtrail:GetInsightSelectors",
+                "cloudtrail:GetQueryResults",
+                "cloudtrail:GetResourcePolicy",
+                "cloudtrail:GetTrail",
+                "cloudtrail:GetTrailStatus",
+                "cloudtrail:List*",
+                "cloudtrail:LookupEvents",
+                "cloudwatch:Describe*",
+                "cloudwatch:GenerateQuery",
+                "cloudwatch:GetDashboard",
+                "cloudwatch:GetInsightRuleReport",
+                "cloudwatch:GetMetricData",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:GetMetricStream",
+                "cloudwatch:GetOTelEnrichment",
+                "cloudwatch:GetProfileRecords",
+                "cloudwatch:GetService",
+                "cloudwatch:GetServiceLevelObjective",
+                "cloudwatch:List*",
+                "codeartifact:Describe*",
+                "codeartifact:GetDomainPermissionsPolicy",
+                "codeartifact:GetRepositoryPermissionsPolicy",
+                "codeartifact:List*",
+                "codebuild:BatchGetFleets",
+                "codebuild:List*",
+                "codecommit:BatchDescribe*",
+                "codecommit:BatchGet*",
+                "codecommit:Describe*",
+                "codecommit:EvaluatePullRequestApprovalRules",
+                "codecommit:GetApprovalRuleTemplate",
+                "codecommit:GetBranch",
+                "codecommit:GetComment",
+                "codecommit:GetCommentReactions",
+                "codecommit:GetCommentsForComparedCommit",
+                "codecommit:GetCommentsForPullRequest",
+                "codecommit:GetCommit",
+                "codecommit:GetCommitHistory",
+                "codecommit:GetCommitsFromMergeBase",
+                "codecommit:GetDifferences",
+                "codecommit:GetMergeCommit",
+                "codecommit:GetMergeConflicts",
+                "codecommit:GetMergeOptions",
+                "codecommit:GetObjectIdentifier",
+                "codecommit:GetPullRequest",
+                "codecommit:GetPullRequestApprovalStates",
+                "codecommit:GetPullRequestOverrideState",
+                "codecommit:GetReferences",
+                "codecommit:GetRepository",
+                "codecommit:GetRepositoryTriggers",
+                "codecommit:GetTree",
+                "codecommit:GetUploadArchiveStatus",
+                "codecommit:List*",
+                "codedeploy:BatchGetDeployments",
+                "codedeploy:BatchGetDeploymentTargets",
+                "codedeploy:GetApplication",
+                "codedeploy:GetDeploymentConfig",
+                "codedeploy:GetDeploymentTarget",
+                "codedeploy:List*",
+                "codeguru-profiler:Describe*",
+                "codeguru-profiler:GetNotificationConfiguration",
+                "codeguru-profiler:GetPolicy",
+                "codeguru-profiler:List*",
+                "codeguru-reviewer:Describe*",
+                "codeguru-reviewer:List*",
+                "codepipeline:GetPipeline",
+                "codepipeline:GetPipelineState",
+                "codepipeline:List*",
+                "codestar-connections:GetConnection",
+                "codestar-connections:GetRepositoryLink",
+                "codestar-connections:GetSyncConfiguration",
+                "codestar-connections:List*",
+                "codestar-notifications:Describe*",
+                "codestar-notifications:List*",
+                "cognito-identity:DescribeIdentityPool",
+                "cognito-identity:GetIdentityPoolRoles",
+                "cognito-identity:ListIdentityPools",
+                "cognito-identity:ListTagsForResource",
+                "cognito-idp:AdminListGroupsForUser",
+                "cognito-idp:DescribeIdentityProvider",
+                "cognito-idp:DescribeResourceServer",
+                "cognito-idp:DescribeRiskConfiguration",
+                "cognito-idp:DescribeUserImportJob",
+                "cognito-idp:DescribeUserPool",
+                "cognito-idp:DescribeUserPoolDomain",
+                "cognito-idp:GetGroup",
+                "cognito-idp:GetLogDeliveryConfiguration",
+                "cognito-idp:GetUICustomization",
+                "cognito-idp:GetUserPoolMfaConfig",
+                "cognito-idp:GetWebACLForResource",
+                "cognito-idp:ListGroups",
+                "cognito-idp:ListIdentityProviders",
+                "cognito-idp:ListResourceServers",
+                "cognito-idp:ListUserPoolClients",
+                "cognito-idp:ListUserPools",
+                "cognito-idp:ListTagsForResource",
+                "comprehend:Describe*",
+                "comprehend:List*",
+                "config:Describe*",
+                "config:GetAggregateResourceConfig",
+                "config:GetStoredQuery",
+                "config:List*",
+                "config:SelectAggregateResourceConfig",
+                "connect:Describe*",
+                "connect:GetMetricDataV2",
+                "connect:GetTaskTemplate",
+                "connect:List*",
+                "cur:Describe*",
+                "cur:Get*",
+                "databrew:Describe*",
+                "databrew:List*",
+                "datapipeline:Describe*",
+                "datapipeline:GetPipelineDefinition",
+                "datapipeline:List*",
+                "datasync:Describe*",
+                "datasync:List*",
+                "deadline:GetFarm",
+                "deadline:GetFleet",
+                "deadline:GetLicenseEndpoint",
+                "deadline:GetMonitor",
+                "deadline:GetQueue",
+                "deadline:GetQueueEnvironment",
+                "deadline:GetQueueFleetAssociation",
+                "deadline:GetStorageProfile",
+                "deadline:List*",
+                "detective:GetMembers",
+                "detective:List*",
+                "devicefarm:GetDevicePool",
+                "devicefarm:GetInstanceProfile",
+                "devicefarm:GetNetworkProfile",
+                "devicefarm:GetProject",
+                "devicefarm:GetTestGridProject",
+                "devicefarm:GetVPCEConfiguration",
+                "devicefarm:List*",
+                "devops-guru:Describe*",
+                "devops-guru:GetResourceCollection",
+                "devops-guru:List*",
+                "directconnect:DescribeConnections",
+                "directconnect:DescribeDirectConnectGatewayAssociations",
+                "directconnect:DescribeDirectConnectGatewayAttachments",
+                "directconnect:DescribeDirectConnectGateways",
+                "directconnect:DescribeHostedConnections",
+                "directconnect:DescribeInterconnects",
+                "directconnect:DescribeLags",
+                "directconnect:DescribeTags",
+                "directconnect:DescribeVirtualInterfaces",
+                "dms:Describe*",
+                "dms:List*",
+                "ds:Describe*",
+                "dynamodb:Describe*",
+                "dynamodb:GetResourcePolicy",
+                "dynamodb:List*",
+                "ec2:Describe*",
+                "ec2:GetActiveVpnTunnelStatus",
+                "ec2:GetAssociatedEnclaveCertificateIamRoles",
+                "ec2:GetAwsNetworkPerformanceData",
+                "ec2:GetCapacityManagerAttributes",
+                "ec2:GetCapacityManagerMetricData",
+                "ec2:GetCapacityManagerMonitoredTagKeys",
+                "ec2:GetIpamPoolAllocations",
+                "ec2:GetIpamPoolCidrs",
+                "ec2:GetManagedPrefixListEntries",
+                "ec2:GetNetworkInsightsAccessScopeContent",
+                "ec2:GetSnapshotBlockPublicAccessState",
+                "ec2:GetTransitGatewayMulticastDomainAssociations",
+                "ec2:GetTransitGatewayRouteTableAssociations",
+                "ec2:GetTransitGatewayRouteTablePropagations",
+                "ec2:GetVerifiedAccessEndpointPolicy",
+                "ec2:GetVerifiedAccessGroupPolicy",
+                "ec2:GetVerifiedAccessInstanceWebAcl",
+                "ec2:GetVpnConnectionDeviceTypes",
+                "ec2:GetVpnTunnelReplacementStatus",
+                "ec2:SearchLocalGatewayRoutes",
+                "ec2:SearchTransitGatewayRoutes",
+                "ecr:Describe*",
+                "ecr:GetLifecyclePolicy",
+                "ecr:GetRegistryPolicy",
+                "ecr:GetRepositoryPolicy",
+                "ecr:List*",
+                "ecs:Describe*",
+                "ecs:List*",
+                "eks:AccessKubernetesApi",
+                "eks:Describe*",
+                "eks:List*",
+                "elasticache:Describe*",
+                "elasticache:List*",
+                "elasticbeanstalk:Describe*",
+                "elasticbeanstalk:List*",
+                "elasticfilesystem:Describe*",
+                "elasticloadbalancing:GetResourcePolicy",
+                "elasticloadbalancing:GetTrustStoreCaCertificatesBundle",
+                "elasticloadbalancing:GetTrustStoreRevocationContent",
+                "elasticloadbalancing:Describe*",
+                "elasticmapreduce:Describe*",
+                "elasticmapreduce:List*",
+                "emr-containers:Describe*",
+                "emr-containers:List*",
+                "emr-serverless:GetApplication",
+                "emr-serverless:List*",
+                "es:Describe*",
+                "es:List*",
+                "events:Describe*",
+                "events:List*",
+                "evidently:GetExperiment",
+                "evidently:GetFeature",
+                "evidently:GetLaunch",
+                "evidently:GetProject",
+                "evidently:GetSegment",
+                "evidently:List*",
+                "firehose:Describe*",
+                "firehose:List*",
+                "fis:GetExperimentTemplate",
+                "fis:GetTargetAccountConfiguration",
+                "fis:List*",
+                "fms:GetNotificationChannel",
+                "fms:GetPolicy",
+                "fms:List*",
+                "forecast:Describe*",
+                "forecast:List*",
+                "frauddetector:BatchGetVariable",
+                "frauddetector:Describe*",
+                "frauddetector:GetDetectors",
+                "frauddetector:GetDetectorVersion",
+                "frauddetector:GetEntityTypes",
+                "frauddetector:GetEventTypes",
+                "frauddetector:GetExternalModels",
+                "frauddetector:GetLabels",
+                "frauddetector:GetListElements",
+                "frauddetector:GetListsMetadata",
+                "frauddetector:GetModelVersion",
+                "frauddetector:GetOutcomes",
+                "frauddetector:GetRules",
+                "frauddetector:GetVariables",
+                "frauddetector:List*",
+                "fsx:Describe*",
+                "gamelift:Describe*",
+                "gamelift:List*",
+                "globalaccelerator:Describe*",
+                "globalaccelerator:List*",
+                "glue:BatchGetJobs",
+                "glue:GetClassifier",
+                "glue:GetClassifiers",
+                "glue:GetCrawler",
+                "glue:GetCrawlerMetrics",
+                "glue:GetCrawlers",
+                "glue:GetDatabase",
+                "glue:GetDatabases",
+                "glue:GetDataCatalogEncryptionSettings",
+                "glue:GetDataQualityResult",
+                "glue:GetJob",
+                "glue:GetJobBookmark",
+                "glue:GetJobRun",
+                "glue:GetJobRuns",
+                "glue:getPartition",
+                "glue:GetPartitions",
+                "glue:GetRegistry",
+                "glue:GetResourcePolicy",
+                "glue:GetSchema",
+                "glue:GetSchemaVersion",
+                "glue:GetTable",
+                "glue:GetTables",
+                "glue:GetTags",
+                "glue:GetTrigger",
+                "glue:GetSecurityConfiguration",
+                "glue:GetSecurityConfigurations",
+                "glue:GetWorkflow",
+                "glue:GetWorkflowRun",
+                "glue:List*",
+                "glue:querySchemaVersionMetadata",
+                "grafana:Describe*",
+                "grafana:List*",
+                "greengrass:Describe*",
+                "greengrass:GetDeployment",
+                "greengrass:List*",
+                "groundstation:GetConfig",
+                "groundstation:GetDataflowEndpointGroup",
+                "groundstation:GetMissionProfile",
+                "groundstation:List*",
+                "guardduty:GetDetector",
+                "guardduty:GetFilter",
+                "guardduty:GetFindings",
+                "guardduty:GetIPSet",
+                "guardduty:GetMalwareProtectionPlan",
+                "guardduty:GetMasterAccount",
+                "guardduty:GetMembers",
+                "guardduty:GetThreatIntelSet",
+                "guardduty:List*",
+                "health:Describe*",
+                "healthlake:Describe*",
+                "healthlake:List*",
+                "iam:GetGroup",
+                "iam:GetGroupPolicy",
+                "iam:GetInstanceProfile",
+                "iam:GetLoginProfile",
+                "iam:GetOpenIDConnectProvider",
+                "iam:GetPolicy",
+                "iam:GetPolicyVersion",
+                "iam:GetRole",
+                "iam:GetRolePolicy",
+                "iam:GetSAMLProvider",
+                "iam:GetServerCertificate",
+                "iam:GetServiceLinkedRoleDeletionStatus",
+                "iam:GetUser",
+                "iam:GetUserPolicy",
+                "iam:ListAccountAliases",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListEntitiesForPolicy",
+                "iam:ListOpenIDConnectProviders",
+                "iam:ListRolePolicies",
+                "iam:ListRoles",
+                "iam:ListServerCertificates",
+                "iam:ListUsers",
+                "iam:ListVirtualMFADevices",
+                "identitystore:DescribeGroup",
+                "identitystore:DescribeGroupMembership",
+                "identitystore:ListGroupMemberships",
+                "identitystore:ListGroups",
+                "imagebuilder:GetComponent",
+                "imagebuilder:GetContainerRecipe",
+                "imagebuilder:GetDistributionConfiguration",
+                "imagebuilder:GetImage",
+                "imagebuilder:GetImagePipeline",
+                "imagebuilder:GetImageRecipe",
+                "imagebuilder:GetInfrastructureConfiguration",
+                "imagebuilder:GetLifecyclePolicy",
+                "imagebuilder:GetWorkflow",
+                "imagebuilder:List*",
+                "inspector2:List*",
+                "inspector2:SearchVulnerabilities",
+                "inspector:Describe*",
+                "inspector:List*",
+                "internetmonitor:GetHealthEvent",
+                "internetmonitor:GetInternetEvent",
+                "internetmonitor:GetMonitor",
+                "internetmonitor:GetQueryResults",
+                "internetmonitor:GetQueryStatus",
+                "internetmonitor:List*",
+                "iot:Describe*",
+                "iot:GetPackage",
+                "iot:GetPackageVersion",
+                "iot:GetPolicy",
+                "iot:GetThingShadow",
+                "iot:GetTopicRule",
+                "iot:GetTopicRuleDestination",
+                "iot:GetV2LoggingOptions",
+                "iot:List*",
+                "iotanalytics:Describe*",
+                "iotanalytics:List*",
+                "iotevents:Describe*",
+                "iotevents:List*",
+                "iotsitewise:Describe*",
+                "iotsitewise:List*",
+                "iotwireless:GetDestination",
+                "iotwireless:GetDeviceProfile",
+                "iotwireless:GetFuotaTask",
+                "iotwireless:GetMulticastGroup",
+                "iotwireless:GetNetworkAnalyzerConfiguration",
+                "iotwireless:GetServiceProfile",
+                "iotwireless:GetWirelessDevice",
+                "iotwireless:GetWirelessGateway",
+                "iotwireless:GetWirelessGatewayTaskDefinition",
+                "iotwireless:List*",
+                "ivs:GetChannel",
+                "ivs:GetEncoderConfiguration",
+                "ivs:GetPlaybackRestrictionPolicy",
+                "ivs:GetRecordingConfiguration",
+                "ivs:GetStage",
+                "ivs:List*",
+                "ivschat:GetLoggingConfiguration",
+                "ivschat:GetRoom",
+                "ivschat:List*",
+                "kafka:Describe*",
+                "kafka:GetClusterPolicy",
+                "kafka:List*",
+                "kafkaconnect:Describe*",
+                "kafkaconnect:List*",
+                "kendra:Describe*",
+                "kendra:List*",
+                "kinesis:Describe*",
+                "kinesis:GetResourcePolicy",
+                "kinesis:List*",
+                "kinesisanalytics:Describe*",
+                "kinesisanalytics:List*",
+                "kinesisvideo:Describe*",
+                "kms:DescribeCustomKeyStores",
+                "kms:DescribeKey",
+                "kms:GetKeyPolicy",
+                "kms:GetKeyRotationStatus",
+                "kms:GetParametersForImport",
+                "kms:GetPublicKey",
+                "kms:ListAliases",
+                "kms:ListGrants",
+                "kms:ListKeyPolicies",
+                "kms:ListKeyRotations",
+                "kms:ListKeys",
+                "kms:ListResourceTags",
+                "kms:ListRetirableGrants",
+                "lakeformation:Describe*",
+                "lakeformation:GetLFTag",
+                "lakeformation:GetResourceLFTags",
+                "lakeformation:List*",
+                "lambda:GetAlias",
+                "lambda:GetCodeSigningConfig",
+                "lambda:GetEventSourceMapping",
+                "lambda:GetFunctionCodeSigningConfig",
+                "lambda:GetFunctionConfiguration",
+                "lambda:GetFunctionEventInvokeConfig",
+                "lambda:GetFunctionRecursionConfig",
+                "lambda:GetFunctionUrlConfig",
+                "lambda:GetLayerVersion",
+                "lambda:GetLayerVersionPolicy",
+                "lambda:GetPolicy",
+                "lambda:GetProvisionedConcurrencyConfig",
+                "lambda:GetRuntimeManagementConfig",
+                "lambda:List*",
+                "launchwizard:GetDeployment",
+                "launchwizard:List*",
+                "license-manager:GetLicense",
+                "license-manager:List*",
+                "lightsail:GetAlarms",
+                "lightsail:GetBuckets",
+                "lightsail:GetCertificates",
+                "lightsail:GetContainerServices",
+                "lightsail:GetDisk",
+                "lightsail:GetDisks",
+                "lightsail:GetInstance",
+                "lightsail:GetInstances",
+                "lightsail:GetLoadBalancer",
+                "lightsail:GetLoadBalancers",
+                "lightsail:GetLoadBalancerTlsCertificates",
+                "lightsail:GetStaticIp",
+                "lightsail:GetStaticIps",
+                "logs:Describe*",
+                "logs:FilterLogEvents",
+                "logs:GetDataProtectionPolicy",
+                "logs:GetDelivery",
+                "logs:GetDeliveryDestination",
+                "logs:GetDeliveryDestinationPolicy",
+                "logs:GetDeliverySource",
+                "logs:GetLogAnomalyDetector",
+                "logs:GetLogDelivery",
+                "logs:GetLogEvents",
+                "logs:GetLogGroupFields",
+                "logs:GetQueryResults",
+                "logs:List*",
+                "logs:StartQuery",
+                "logs:StopLiveTail",
+                "logs:StopQuery",
+                "logs:TestMetricFilter",
+                "m2:GetApplication",
+                "m2:GetEnvironment",
+                "m2:List*",
+                "macie2:GetAllowList",
+                "macie2:GetCustomDataIdentifier",
+                "macie2:GetFindingsFilter",
+                "macie2:GetMacieSession",
+                "macie2:List*",
+                "mediaconnect:Describe*",
+                "mediaconnect:List*",
+                "medialive:Describe*",
+                "medialive:GetCloudWatchAlarmTemplate",
+                "medialive:GetCloudWatchAlarmTemplateGroup",
+                "medialive:GetEventBridgeRuleTemplate",
+                "medialive:GetEventBridgeRuleTemplateGroup",
+                "medialive:GetSignalMap",
+                "medialive:List*",
+                "mediapackage-vod:Describe*",
+                "mediapackage-vod:List*",
+                "mediapackage:Describe*",
+                "mediapackage:List*",
+                "mediapackagev2:GetChannel",
+                "mediapackagev2:GetChannelGroup",
+                "mediapackagev2:GetChannelPolicy",
+                "mediapackagev2:GetOriginEndpoint",
+                "mediapackagev2:GetOriginEndpointPolicy",
+                "mediapackagev2:List*",
+                "memorydb:Describe*",
+                "memorydb:List*",
+                "mobiletargeting:GetInAppTemplate",
+                "mobiletargeting:List*",
+                "mq:Describe*",
+                "mq:List*",
+                "network-firewall:Describe*",
+                "network-firewall:List*",
+                "networkflowmonitor:GetMonitor",
+                "networkflowmonitor:GetQueryResultsMonitorTopContributors",
+                "networkflowmonitor:GetQueryResultsWorkloadInsightsTopContributors",
+                "networkflowmonitor:GetQueryResultsWorkloadInsightsTopContributorsData",
+                "networkflowmonitor:GetQueryStatusMonitorTopContributors",
+                "networkflowmonitor:GetQueryStatusWorkloadInsightsTopContributors",
+                "networkflowmonitor:GetQueryStatusWorkloadInsightsTopContributorsData",
+                "networkflowmonitor:GetScope",
+                "networkflowmonitor:ListMonitors",
+                "networkflowmonitor:ListScopes",
+                "networkflowmonitor:ListTagsForResource",
+                "networkmanager:Describe*",
+                "networkmanager:GetConnectAttachment",
+                "networkmanager:GetConnectPeer",
+                "networkmanager:GetCoreNetwork",
+                "networkmanager:GetCoreNetworkPolicy",
+                "networkmanager:GetCustomerGatewayAssociations",
+                "networkmanager:GetDevices",
+                "networkmanager:GetLinkAssociations",
+                "networkmanager:GetLinks",
+                "networkmanager:GetSites",
+                "networkmanager:GetSiteToSiteVpnAttachment",
+                "networkmanager:GetTransitGatewayPeering",
+                "networkmanager:GetTransitGatewayRegistrations",
+                "networkmanager:GetTransitGatewayRouteTableAttachment",
+                "networkmanager:GetVpcAttachment",
+                "networkmanager:List*",
+                "networkmonitor:GetMonitor",
+                "networkmonitor:GetProbe",
+                "networkmonitor:ListMonitors",
+                "networkmonitor:ListTagsForResource",
+                "oam:GetLink",
+                "oam:GetSink",
+                "oam:GetSinkPolicy",
+                "oam:List*",
+                "omics:GetAnnotationStore",
+                "omics:GetReferenceStore",
+                "omics:GetRunGroup",
+                "omics:GetSequenceStore",
+                "omics:GetVariantStore",
+                "omics:GetWorkflow",
+                "omics:List*",
+                "organizations:Describe*",
+                "organizations:List*",
+                "osis:GetPipeline",
+                "osis:List*",
+                "payment-cryptography:GetAlias",
+                "payment-cryptography:GetKey",
+                "payment-cryptography:List*",
+                "pca-connector-ad:GetConnector",
+                "pca-connector-ad:GetDirectoryRegistration",
+                "pca-connector-ad:GetServicePrincipalName",
+                "pca-connector-ad:GetTemplate",
+                "pca-connector-ad:GetTemplateGroupAccessControlEntry",
+                "pca-connector-ad:List*",
+                "pca-connector-scep:GetChallengeMetadata",
+                "pca-connector-scep:GetConnector",
+                "pca-connector-scep:List*",
+                "personalize:Describe*",
+                "personalize:List*",
+                "pi:Describe*",
+                "pi:Get*",
+                "pi:List*",
+                "pipes:Describe*",
+                "pipes:List*",
+                "proton:GetEnvironmentTemplate",
+                "proton:GetServiceTemplate",
+                "proton:List*",
+                "qbusiness:GetApplication",
+                "qbusiness:GetDataSource",
+                "qbusiness:GetIndex",
+                "qbusiness:GetPlugin",
+                "qbusiness:GetRetriever",
+                "qbusiness:GetWebExperience",
+                "qbusiness:List*",
+                "ram:GetPermission",
+                "ram:GetResourceShares",
+                "ram:List*",
+                "rds:Describe*",
+                "rds:List*",
+                "redshift-serverless:GetNamespace",
+                "redshift-serverless:GetWorkgroup",
+                "redshift-serverless:List*",
+                "redshift:Describe*",
+                "refactor-spaces:GetApplication",
+                "refactor-spaces:GetEnvironment",
+                "refactor-spaces:GetRoute",
+                "refactor-spaces:List*",
+                "rekognition:Describe*",
+                "rekognition:List*",
+                "resiliencehub:Describe*",
+                "resiliencehub:Get*",
+                "resiliencehub:List*",
+                "resource-explorer-2:GetDefaultView",
+                "resource-explorer-2:GetIndex",
+                "resource-explorer-2:GetView",
+                "resource-explorer-2:List*",
+                "resource-explorer-2:Search",
+                "resource-groups:GetGroup",
+                "resource-groups:GetGroupConfiguration",
+                "resource-groups:GetGroupQuery",
+                "resource-groups:GetTags",
+                "resource-groups:List*",
+                "route53-recovery-control-config:Describe*",
+                "route53-recovery-control-config:List*",
+                "route53-recovery-readiness:GetCell",
+                "route53-recovery-readiness:GetReadinessCheck",
+                "route53-recovery-readiness:GetRecoveryGroup",
+                "route53-recovery-readiness:GetResourceSet",
+                "route53-recovery-readiness:List*",
+                "route53:GetDNSSEC",
+                "route53:GetHealthCheck",
+                "route53:GetHealthCheckStatus",
+                "route53:GetHostedZone",
+                "route53:List*",
+                "route53profiles:GetProfile",
+                "route53profiles:GetProfileAssociation",
+                "route53profiles:GetProfileResourceAssociation",
+                "route53profiles:List*",
+                "route53resolver:GetFirewallDomainList",
+                "route53resolver:GetFirewallRuleGroup",
+                "route53resolver:GetFirewallRuleGroupAssociation",
+                "route53resolver:GetOutpostResolver",
+                "route53resolver:GetResolverConfig",
+                "route53resolver:GetResolverQueryLogConfig",
+                "route53resolver:GetResolverQueryLogConfigAssociation",
+                "route53resolver:GetResolverRule",
+                "route53resolver:GetResolverRuleAssociation",
+                "route53resolver:List*",
+                "rum:GetAppMonitor",
+                "rum:List*",
+                "s3-outposts:ListEndpoints",
+                "s3-outposts:ListOutpostsWithS3",
+                "s3:GetAccelerateConfiguration",
+                "s3:GetAccessGrant",
+                "s3:GetAccessGrantsInstance",
+                "s3:GetAccessGrantsLocation",
+                "s3:GetAccessPoint",
+                "s3:GetAccessPointConfigurationForObjectLambda",
+                "s3:GetAccessPointForObjectLambda",
+                "s3:GetAccessPointPolicy",
+                "s3:GetAccessPointPolicyForObjectLambda",
+                "s3:GetAccessPointPolicyStatusForObjectLambda",
+                "s3:GetAnalyticsConfiguration",
+                "s3:GetBucketAbac",
+                "s3:GetBucketAcl",
+                "s3:GetBucketCORS",
+                "s3:GetBucketLocation",
+                "s3:GetBucketLogging",
+                "s3:GetBucketMetadataTableConfiguration",
+                "s3:GetBucketNotification",
+                "s3:GetBucketObjectLockConfiguration",
+                "s3:GetBucketOwnershipControls",
+                "s3:GetBucketPolicy",
+                "s3:GetBucketPublicAccessBlock",
+                "s3:GetBucketTagging",
+                "s3:GetBucketVersioning",
+                "s3:GetBucketWebsite",
+                "s3:GetEncryptionConfiguration",
+                "s3:GetIntelligentTieringConfiguration",
+                "s3:GetInventoryConfiguration",
+                "s3:GetLifecycleConfiguration",
+                "s3:GetMetricsConfiguration",
+                "s3:GetMultiRegionAccessPoint",
+                "s3:GetMultiRegionAccessPointPolicy",
+                "s3:GetMultiRegionAccessPointPolicyStatus",
+                "s3:GetReplicationConfiguration",
+                "s3:GetStorageLensConfiguration",
+                "s3:GetStorageLensConfigurationTagging",
+                "s3:GetStorageLensGroup",
+                "s3:ListAllMyBuckets",
+                "s3:ListTagsForResource",
+                "sagemaker:Describe*",
+                "sagemaker:List*",
+                "scheduler:GetSchedule",
+                "scheduler:GetScheduleGroup",
+                "scheduler:List*",
+                "schemas:Describe*",
+                "schemas:GetResourcePolicy",
+                "schemas:List*",
+                "secretsmanager:Describe*",
+                "secretsmanager:GetResourcePolicy",
+                "secretsmanager:List*",
+                "securityhub:BatchGetAutomationRules",
+                "securityhub:BatchGetSecurityControls",
+                "securityhub:Describe*",
+                "securityhub:GetConfigurationPolicy",
+                "securityhub:GetConfigurationPolicyAssociation",
+                "securityhub:GetEnabledStandards",
+                "securityhub:GetFindingAggregator",
+                "securityhub:GetFindings",
+                "securityhub:GetInsights",
+                "securityhub:List*",
+                "securitylake:GetSubscriber",
+                "securitylake:List*",
+                "servicecatalog:Describe*",
+                "servicecatalog:GetApplication",
+                "servicecatalog:GetAttributeGroup",
+                "servicecatalog:List*",
+                "servicequotas:Get*",
+                "servicequotas:List*",
+                "ses:Describe*",
+                "ses:GetAccount",
+                "ses:GetAddonInstance",
+                "ses:GetAddonSubscription",
+                "ses:GetArchive",
+                "ses:GetConfigurationSet",
+                "ses:GetConfigurationSetEventDestinations",
+                "ses:GetContactList",
+                "ses:GetDedicatedIpPool",
+                "ses:GetDedicatedIps",
+                "ses:GetEmailIdentity",
+                "ses:GetEmailTemplate",
+                "ses:GetIngressPoint",
+                "ses:GetRelay",
+                "ses:GetRuleSet",
+                "ses:GetTemplate",
+                "ses:GetTrafficPolicy",
+                "ses:List*",
+                "shield:Describe*",
+                "shield:List*",
+                "signer:GetSigningProfile",
+                "signer:List*",
+                "sns:GetDataProtectionPolicy",
+                "sns:GetSubscriptionAttributes",
+                "sns:GetTopicAttributes",
+                "sns:List*",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+                "sqs:List*",
+                "ssm-contacts:GetContact",
+                "ssm-contacts:GetContactChannel",
+                "ssm-contacts:List*",
+                "ssm-incidents:GetReplicationSet",
+                "ssm-incidents:GetResponsePlan",
+                "ssm-incidents:List*",
+                "ssm-sap:GetApplication",
+                "ssm-sap:List*",
+                "ssm:Describe*",
+                "ssm:GetCommandInvocation",
+                "ssm:GetDefaultPatchBaseline",
+                "ssm:GetDocument",
+                "ssm:GetPatchBaseline",
+                "ssm:GetResourcePolicies",
+                "ssm:List*",
+                "sso:DescribeAccountAssignmentCreationStatus",
+                "sso:DescribePermissionSet",
+                "sso:GetInlinePolicyForPermissionSet",
+                "sso:GetManagedApplicationInstance",
+                "sso:GetPermissionsBoundaryForPermissionSet",
+                "sso:GetSharedSsoConfiguration",
+                "sso:ListAccountAssignments",
+                "sso:ListApplicationAssignments",
+                "sso:ListApplications",
+                "sso:ListCustomerManagedPolicyReferencesInPermissionSet",
+                "sso:ListInstances",
+                "sso:ListManagedPoliciesInPermissionSet",
+                "sso:ListPermissionSets",
+                "sso:ListTagsForResource",
+                "states:GetExecutionHistory",
+                "states:Describe*",
+                "states:List*",
+                "support:DescribeCases",
+                "synthetics:Describe*",
+                "synthetics:GetCanary",
+                "synthetics:GetCanaryRuns",
+                "synthetics:GetGroup",
+                "synthetics:List*",
+                "tag:GetResources",
+                "timestream:Describe*",
+                "timestream:List*",
+                "transfer:Describe*",
+                "transfer:List*",
+                "verifiedpermissions:GetIdentitySource",
+                "verifiedpermissions:GetPolicy",
+                "verifiedpermissions:GetPolicyStore",
+                "verifiedpermissions:GetPolicyTemplate",
+                "verifiedpermissions:GetSchema",
+                "verifiedpermissions:List*",
+                "vpc-lattice:GetAccessLogSubscription",
+                "vpc-lattice:GetAuthPolicy",
+                "vpc-lattice:GetListener",
+                "vpc-lattice:GetResourcePolicy",
+                "vpc-lattice:GetRule",
+                "vpc-lattice:GetService",
+                "vpc-lattice:GetServiceNetwork",
+                "vpc-lattice:GetServiceNetworkServiceAssociation",
+                "vpc-lattice:GetServiceNetworkVpcAssociation",
+                "vpc-lattice:GetTargetGroup",
+                "vpc-lattice:List*",
+                "wafv2:GetIPSet",
+                "wafv2:GetLoggingConfiguration",
+                "wafv2:GetRegexPatternSet",
+                "wafv2:GetRuleGroup",
+                "wafv2:GetSampledRequests",
+                "wafv2:GetWebACL",
+                "wafv2:GetWebACLForResource",
+                "wafv2:List*",
+                "wisdom:Get*",
+                "wisdom:List*",
+                "wisdom:Query*",
+                "wisdom:Retrieve",
+                "wisdom:Search*",
+                "workspaces-web:GetBrowserSettings",
+                "workspaces-web:GetIdentityProvider",
+                "workspaces-web:GetNetworkSettings",
+                "workspaces-web:GetPortal",
+                "workspaces-web:GetPortalServiceProviderMetadata",
+                "workspaces-web:GetTrustStore",
+                "workspaces-web:GetUserAccessLoggingSettings",
+                "workspaces-web:GetUserSettings",
+                "workspaces-web:List*",
+                "workspaces:Describe*",
+                "xray:BatchGetTraces",
+                "xray:GetGroup",
+                "xray:GetGroups",
+                "xray:GetSamplingRules",
+                "xray:GetServiceGraph",
+                "xray:GetTraceSummaries",
+                "xray:List*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AIOPSAPIGatewayAccess",
+              "Effect": "Allow",
+              "Action": [
+                "apigateway:GET"
+              ],
+              "Resource": [
+                "arn:aws:apigateway:*::/restapis",
+                "arn:aws:apigateway:*::/restapis/*",
+                "arn:aws:apigateway:*::/restapis/*/deployments",
+                "arn:aws:apigateway:*::/restapis/*/deployments/*",
+                "arn:aws:apigateway:*::/restapis/*/resources/*/methods/*/integrations",
+                "arn:aws:apigateway:*::/restapis/*/resources/*/methods/*/integrations/*",
+                "arn:aws:apigateway:*::/restapis/*/stages",
+                "arn:aws:apigateway:*::/restapis/*/stages/*",
+                "arn:aws:apigateway:*::/apis",
+                "arn:aws:apigateway:*::/apis/*",
+                "arn:aws:apigateway:*::/apis/*/deployments",
+                "arn:aws:apigateway:*::/apis/*/deployments/*",
+                "arn:aws:apigateway:*::/apis/*/integrations",
+                "arn:aws:apigateway:*::/apis/*/integrations/*",
+                "arn:aws:apigateway:*::/apis/*/stages",
+                "arn:aws:apigateway:*::/apis/*/stages/*",
+                "arn:aws:apigateway:*::/domainnames",
+                "arn:aws:apigateway:*::/domainnames/*"
+              ]
+            },
+            {
+              "Sid": "AllowListBucketAWSLogs",
+              "Effect": "Allow",
+              "Action": "s3:ListBucket",
+              "Resource": "arn:aws:s3:::*",
+              "Condition": {
+                "StringLike": {
+                  "s3:prefix": [
+                    "AWSLogs/*",
+                    "*/AWSLogs/*"
+                  ]
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-03-26T03:42:09.000Z",
-    "lastUpdatedDate": "2026-11-04T18:07:07.000Z"
+    "lastUpdatedDate": "2026-11-06T21:57:08.000Z"
   },
   "AIDevOpsOperatorAppAccessPolicy": {
     "arn": "arn:aws:iam::aws:policy/AIDevOpsOperatorAppAccessPolicy",
@@ -1562883,8 +1564846,8 @@
   },
   "AmazonBioDiscoveryFullAccess": {
     "arn": "arn:aws:iam::aws:policy/AmazonBioDiscoveryFullAccess",
-    "latestVersionId": "v1",
-    "versionsCount": 1,
+    "latestVersionId": "v2",
+    "versionsCount": 2,
     "versions": {
       "v1": {
         "createdDate": "2026-08-18T06:27:20.000Z",
@@ -1562995,10 +1564958,166 @@
             }
           ]
         }
+      },
+      "v2": {
+        "createdDate": "2026-08-18T06:27:20.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AmazonBioDiscoveryFullAccess",
+              "Effect": "Allow",
+              "Action": [
+                "researchstudio:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmazonBioDiscoveryPassRoleAccess",
+              "Effect": "Allow",
+              "Action": [
+                "iam:PassRole"
+              ],
+              "Resource": "arn:aws:iam::*:role/*",
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": "researchstudio.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AmazonBioDiscoveryIdentityStoreAccess",
+              "Effect": "Allow",
+              "Action": [
+                "identitystore:ListGroupMembershipsForMember",
+                "identitystore:ListGroups",
+                "identitystore:ListUsers",
+                "identitystore:DescribeGroup",
+                "identitystore:DescribeUser"
+              ],
+              "Resource": [
+                "arn:aws:identitystore::*:identitystore/*",
+                "arn:aws:identitystore:::user/*",
+                "arn:aws:identitystore:::group/*",
+                "arn:aws:identitystore:::membership/*"
+              ]
+            },
+            {
+              "Sid": "AmazonBioDiscoveryIdentityCenterAccess",
+              "Effect": "Allow",
+              "Action": [
+                "sso:CreateApplication",
+                "sso:CreateApplicationAssignment",
+                "sso:DeleteApplication",
+                "sso:DeleteApplicationAuthenticationMethod",
+                "sso:DeleteApplicationGrant",
+                "sso:DescribeApplication",
+                "sso:DescribeApplicationAssignment",
+                "sso:GetApplicationAuthenticationMethod",
+                "sso:GetApplicationGrant",
+                "sso:PutApplicationAuthenticationMethod",
+                "sso:PutApplicationGrant",
+                "sso:DeleteApplicationAssignment",
+                "sso:DescribeInstance",
+                "sso:ListInstances",
+                "sso:ListApplications",
+                "sso:ListApplicationAssignments",
+                "sso:ListApplicationGrants",
+                "sso:PutApplicationAccessScope",
+                "sso:DeleteApplicationAccessScope",
+                "sso:ListApplicationAccessScopes",
+                "sso:DescribeRegisteredRegions"
+              ],
+              "Resource": [
+                "arn:aws:sso:::instance/*",
+                "arn:aws:sso::*:application/*/*",
+                "arn:aws:sso::aws:applicationProvider/ResearchStudio"
+              ]
+            },
+            {
+              "Sid": "AmazonBioDiscoveryIdentityCenterKMSAccess",
+              "Effect": "Allow",
+              "Action": [
+                "kms:Decrypt"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ArnLike": {
+                  "kms:EncryptionContext:aws:sso:instance-arn": "arn:aws:sso:::instance/*"
+                },
+                "StringLike": {
+                  "kms:ViaService": "sso.*.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AmazonBioDiscoveryIdentityStoreKMSAccess",
+              "Effect": "Allow",
+              "Action": [
+                "kms:Decrypt"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ArnLike": {
+                  "kms:EncryptionContext:aws:identitystore:identitystore-arn": "arn:aws:identitystore::*:identitystore/*"
+                },
+                "StringLike": {
+                  "kms:ViaService": "identitystore.*.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AllowCreateAmazonBioDiscoveryServiceLinkedRole",
+              "Effect": "Allow",
+              "Action": "iam:CreateServiceLinkedRole",
+              "Resource": "arn:aws:iam::*:role/aws-service-role/researchstudio.amazonaws.com/AWSServiceRoleForAmazonBioDiscovery",
+              "Condition": {
+                "StringEquals": {
+                  "iam:AWSServiceName": "researchstudio.amazonaws.com"
+                }
+              }
+            },
+            {
+              "Sid": "AmazonBioDiscoveryVpcDescribeAccess",
+              "Effect": "Allow",
+              "Action": [
+                "ec2:DescribeVpcs",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Sid": "AmazonBioDiscoveryS3ListBucketsAccess",
+              "Effect": "Allow",
+              "Action": "s3:ListAllMyBuckets",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "s3:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            },
+            {
+              "Sid": "AmazonBioDiscoveryS3BucketReadAccess",
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket",
+                "s3:GetEncryptionConfiguration"
+              ],
+              "Resource": "arn:aws:s3:::*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceAccount": "${aws:PrincipalAccount}"
+                }
+              }
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-08-18T06:27:20.000Z",
-    "lastUpdatedDate": "2026-08-18T06:27:20.000Z"
+    "lastUpdatedDate": "2026-11-06T22:37:08.000Z"
   },
   "AmazonBioDiscoveryInAppFullAccess": {
     "arn": "arn:aws:iam::aws:policy/AmazonBioDiscoveryInAppFullAccess",
@@ -1574412,8 +1576531,8 @@
   },
   "AssuranceOperatorPolicy": {
     "arn": "arn:aws:iam::aws:policy/service-role/AssuranceOperatorPolicy",
-    "latestVersionId": "v2",
-    "versionsCount": 2,
+    "latestVersionId": "v3",
+    "versionsCount": 3,
     "versions": {
       "v1": {
         "createdDate": "2026-10-21T15:17:07.000Z",
@@ -1574598,10 +1576717,102 @@
             }
           ]
         }
+      },
+      "v3": {
+        "createdDate": "2026-10-21T15:17:07.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AssuranceOperatorAccess",
+              "Effect": "Allow",
+              "Action": [
+                "assurance:BatchGetComment",
+                "assurance:BatchGetTask",
+                "assurance:BatchGetControl",
+                "assurance:Chat",
+                "assurance:CreateComment",
+                "assurance:CreateControl",
+                "assurance:CreateControlGroup",
+                "assurance:CreateFramework",
+                "assurance:CreateProject",
+                "assurance:DeleteComment",
+                "assurance:DeleteControl",
+                "assurance:DeleteControlGroup",
+                "assurance:DeleteEvidence",
+                "assurance:DeleteFramework",
+                "assurance:DeleteProject",
+                "assurance:DisableFramework",
+                "assurance:EnableFramework",
+                "assurance:GetAnnotation",
+                "assurance:GetAssessment",
+                "assurance:GetAssessmentReportContent",
+                "assurance:GetAssessmentReportExport",
+                "assurance:GetChatMessages",
+                "assurance:GetComment",
+                "assurance:GetControl",
+                "assurance:GetControlGroup",
+                "assurance:GetControlStatus",
+                "assurance:GetEnvironment",
+                "assurance:GetEvidence",
+                "assurance:GetEvidenceContent",
+                "assurance:GetFramework",
+                "assurance:GetProject",
+                "assurance:GetResourceActivitiesQueryResults",
+                "assurance:GetTask",
+                "assurance:ListAssessmentAnnotations",
+                "assurance:ListEvidenceAnnotations",
+                "assurance:ListAssessmentJournalRecords",
+                "assurance:ListAssessments",
+                "assurance:ListAssessmentOutcomes",
+                "assurance:ListChatSessions",
+                "assurance:ListComments",
+                "assurance:ListConnectionItems",
+                "assurance:ListControls",
+                "assurance:ListControlGroups",
+                "assurance:ListControlResources",
+                "assurance:ListDiscoveredResources",
+                "assurance:ListEnabledFrameworks",
+                "assurance:ListEnvironmentConnections",
+                "assurance:ListEvidence",
+                "assurance:ListFrameworks",
+                "assurance:ListProjects",
+                "assurance:ListTagsForResource",
+                "assurance:ListTaskHistory",
+                "assurance:ListTasks",
+                "assurance:PublishFramework",
+                "assurance:PutControlStatusOverride",
+                "assurance:PutEvidence",
+                "assurance:StartAssessment",
+                "assurance:StartAssessmentReportExport",
+                "assurance:StartResourceActivitiesQuery",
+                "assurance:UpdateComment",
+                "assurance:UpdateControl",
+                "assurance:UpdateControlGroup",
+                "assurance:UpdateEvidence",
+                "assurance:UpdateFramework",
+                "assurance:UpdateProject",
+                "assurance:UpdateTask"
+              ],
+              "Resource": [
+                "arn:aws:assurance:*:*:environment/*"
+              ]
+            },
+            {
+              "Sid": "IDCUserAccess",
+              "Effect": "Allow",
+              "Action": "identitystore:DescribeUser",
+              "Resource": [
+                "arn:aws:identitystore::*:identitystore/*",
+                "arn:aws:identitystore:::user/*"
+              ]
+            }
+          ]
+        }
       }
     },
     "createdDate": "2026-10-21T15:17:07.000Z",
-    "lastUpdatedDate": "2026-11-04T18:57:08.000Z"
+    "lastUpdatedDate": "2026-11-06T16:37:07.000Z"
   },
   "AWSMarketplaceSubsidiaryAuthorizationServiceRolePolicy": {
     "arn": "arn:aws:iam::aws:policy/service-role/AWSMarketplaceSubsidiaryAuthorizationServiceRolePolicy",
@@ -1575198,5 +1577409,102 @@
     },
     "createdDate": "2026-11-06T00:37:07.000Z",
     "lastUpdatedDate": "2026-11-06T00:37:07.000Z"
+  },
+  "AWSCODAPermissionsBoundary": {
+    "arn": "arn:aws:iam::aws:policy/AWSCODAPermissionsBoundary",
+    "latestVersionId": "v1",
+    "versionsCount": 1,
+    "versions": {
+      "v1": {
+        "createdDate": "2026-11-06T18:07:08.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "NotAction": [
+                "iam:CreateRole",
+                "iam:CreateUser",
+                "iam:DeleteRolePermissionsBoundary",
+                "iam:PutRolePermissionsBoundary",
+                "sts:AssumeRoot"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateRole",
+                "iam:CreateUser",
+                "iam:PutRolePermissionsBoundary"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "ArnLike": {
+                  "iam:PermissionsBoundary": "arn:*:iam::aws:policy/AWSCODAPermissionsBoundary"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "createdDate": "2026-11-06T18:07:08.000Z",
+    "lastUpdatedDate": "2026-11-06T18:07:08.000Z"
+  },
+  "AIDevOpsOrganizationsAccessPolicy": {
+    "arn": "arn:aws:iam::aws:policy/AIDevOpsOrganizationsAccessPolicy",
+    "latestVersionId": "v1",
+    "versionsCount": 1,
+    "versions": {
+      "v1": {
+        "createdDate": "2026-11-06T22:07:08.000Z",
+        "document": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "OrgSourceStackSets",
+              "Effect": "Allow",
+              "Action": [
+                "cloudformation:CreateStackSet",
+                "cloudformation:DescribeStackSet",
+                "cloudformation:UpdateStackSet",
+                "cloudformation:DeleteStackSet",
+                "cloudformation:CreateStackInstances",
+                "cloudformation:DeleteStackInstances",
+                "cloudformation:ListStackInstances",
+                "cloudformation:DescribeStackSetOperation",
+                "cloudformation:ListStackSetOperations",
+                "cloudformation:ListStackSetOperationResults"
+              ],
+              "Resource": [
+                "arn:aws:cloudformation:*:*:stackset/AIDevOpsOrgSource-*",
+                "arn:aws:cloudformation:*:*:stackset-target/AIDevOpsOrgSource-*/*",
+                "arn:aws:cloudformation:*:*:type/resource/AWS-IAM-Role",
+                "arn:aws:cloudformation:*:*:type/resource/AWS-CloudFormation-WaitConditionHandle"
+              ]
+            },
+            {
+              "Sid": "OrgReads",
+              "Effect": "Allow",
+              "Action": [
+                "organizations:DescribeOrganization",
+                "organizations:DescribeAccount",
+                "organizations:DescribeOrganizationalUnit",
+                "organizations:ListParents",
+                "organizations:ListChildren",
+                "organizations:ListRoots",
+                "organizations:ListAWSServiceAccessForOrganization",
+                "organizations:ListDelegatedServicesForAccount",
+                "organizations:ListDelegatedAdministrators"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "createdDate": "2026-11-06T22:07:08.000Z",
+    "lastUpdatedDate": "2026-11-06T22:07:08.000Z"
   }
 }
