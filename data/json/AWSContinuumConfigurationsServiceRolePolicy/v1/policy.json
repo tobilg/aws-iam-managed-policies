@@ -1,0 +1,40 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "OrganizationsPermissionsOnResources",
+      "Effect": "Allow",
+      "Action": [
+        "organizations:DescribeAccount",
+        "organizations:DescribeOrganizationalUnit"
+      ],
+      "Resource": "arn:aws:organizations::*:*"
+    },
+    {
+      "Sid": "OrganizationsPermissionsWithoutResources",
+      "Effect": "Allow",
+      "Action": [
+        "organizations:ListAccounts",
+        "organizations:ListChildren",
+        "organizations:ListParents",
+        "organizations:DescribeOrganization"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DelegatedAdminPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "organizations:ListDelegatedAdministrators"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "organizations:ServicePrincipal": [
+            "continuum.amazonaws.com"
+          ]
+        }
+      }
+    }
+  ]
+}
